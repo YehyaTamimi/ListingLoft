@@ -72,6 +72,7 @@ const createCard = (house) => {
       card.classList.add("card");
       card.classList.add("swiper-slide");
       card.innerHTML = `<img src="${image}" alt="" class="card-img">
+                        <button class="add-favorite"><i class="fa-regular fa-heart"></i></button>
                         <div class="info">
                               <p class="price">$${price}</p>
                               <p class="small-info">${beds} bed | ${baths} bath | ${size} sqrt | ${street}, ${city}, ${state}</p>
