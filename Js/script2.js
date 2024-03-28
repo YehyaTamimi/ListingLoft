@@ -77,6 +77,7 @@ const createCard = (house) => {
     let card = document.createElement("div");
     card.classList.add("card");
     card.innerHTML = `<img src="${image}" alt="" class="card-img">
+                        <button class="add-favorite"><i class="fa-regular fa-heart"></i></button>
                           <div class="info">
                                 <p class="price">$${price}</p>
                                 <p class="small-info">${beds} bed | ${baths} bath | ${size} sqrt | ${street}, ${city}, ${state}</p>
