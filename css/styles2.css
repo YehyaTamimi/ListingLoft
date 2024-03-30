@@ -197,6 +197,12 @@ main{
     color: white;
 }
 
+.active {
+    border: 1px solid #036DCE;
+    background-color: #036cce56;
+    color: white;
+}
+
 .apply{
 
     background-color: #036DCE;
@@ -240,4 +246,19 @@ main{
     top: 14%;
     right: 10px;
     font-size: 1.5rem;
+}
+
+.reset, .reset2 {
+    align-self: start;
+    color :#036DCE;
+}
+
+.reset2{
+    margin-bottom: 10px;
+}
+
+.reset:hover, .reset2:hover{
+    color: #9C1818;
+    text-decoration: underline;
+    cursor: pointer;
 }
