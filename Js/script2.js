@@ -1,9 +1,15 @@
 import json from "./proporties.js";
 
 
-let lastOpenContainer;
+let searchArr = [];
+let query
 document.addEventListener('DOMContentLoaded', () => {
-    loadcontent();
+    if (sessionStorage.getItem("query") !== null) {
+        query = sessionStorage.getItem("query");
+        loadcontent(query);
+    } else {
+        loadcontent();
+    }
     document.querySelector(".price-button").addEventListener("click", () => {
         viewRange("price")
     });
@@ -19,6 +25,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector(".home").addEventListener("click", () => {
         window.location.href = "/html/index.html";
     })
+
+    let input = document.querySelector(".search-input");
+    document.querySelector(".search").addEventListener('click', () => {
+        goToSearchPage(input.value.trim());
+    });;
+    input.addEventListener("keypress", (e) => {
+        if (e.key === 'Enter') {
+            goToSearchPage(input.value.trim());
+        }
+    });
 
 })
 
@@ -52,17 +68,43 @@ const requestListings = () => {
 
 }
 
-const loadcontent = () => {
+const loadcontent = (query = "") => {
     let houses = json["listings"];
-    let container = document.querySelector(".cards-container");
 
     houses.forEach((house) => {
-        let card = createCard(house);
-        container.appendChild(card);
+        let desc = house["description"];
+        let size = desc["sqft"];
+        let location = house["location"];
+        let city = location["address"]["city"];
+        let state = location["address"]["state"];
+        let street = location["address"]["street_name"];
+        let price = house["list_price"];
+
+        if (query !== "") {
+            query = query.toLowerCase();
+            let isnum = /^\d+$/.test(query);
+            if (isnum === false) {
+                if (!(state.toLowerCase().includes(query) || city.toLowerCase().includes(query) || street.toLowerCase().includes(query))) {
+                    return;
+                }
+            } else {
+                if (query.length >= 5) {
+                    if (parseFloat(price) > parseFloat(query)) {
+                        return;
+                    }
+                } else {
+                    if (parseFloat(size) > parseFloat(query)) {
+                        return;
+                    }
+                }
+            }
+        }
+        createCard(house);
     });
 }
 
 const createCard = (house) => {
+    let container = document.querySelector(".cards-container");
     let desc = house["description"];
     let baths = desc["baths_full"];
     let beds = desc["beds"];
@@ -71,7 +113,7 @@ const createCard = (house) => {
     let city = location["address"]["city"];
     let state = location["address"]["state"];
     let street = location["address"]["street_name"];
-    let price = house["list_price"].toLocaleString();
+    let price = house["list_price"];
     let image = house["primary_photo"]["href"];
 
     let card = document.createElement("div");
@@ -79,15 +121,14 @@ const createCard = (house) => {
     card.innerHTML = `<img src="${image}" alt="" class="card-img">
                         <button class="add-favorite"><i class="fa-regular fa-heart"></i></button>
                           <div class="info">
-                                <p class="price">$${price}</p>
+                                <p class="price">$${price.toLocaleString()}</p>
                                 <p class="small-info">${beds} bed | ${baths} bath | ${size} sqrt | ${street}, ${city}, ${state}</p>
                           </div>`
-    return card;
-
+    container.appendChild(card);
 }
+
 const viewRange = (element) => {
     let button = document.querySelector(`.${element}-button`);
-    console.log(button)
     let icon = button.lastElementChild;
     if (icon.classList.contains("fa-caret-down")) {
         checkOpenContainers();
@@ -180,4 +221,11 @@ const checkOpenContainers = () => {
             parent.removeChild(parent.lastElementChild);
         }
     })
+}
+
+
+const goToSearchPage = (query = "") => {
+    sessionStorage.setItem("query", query);
+    document.querySelector(".cards-container").innerHTML ="";
+    loadcontent(query);
 }
