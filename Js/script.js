@@ -4,11 +4,15 @@ import json from "./newListings.js";
 document.addEventListener("DOMContentLoaded", () => {
     startswiper();
     loadcontent();
-    document.querySelector(".discover").addEventListener('click', goToSearchPage)
-    document.querySelector(".search").addEventListener('click', goToSearchPage);;
-    document.querySelector(".search-input").addEventListener("keypress", (e) => {
+    let input = document.querySelector(".search-input")
+    document.querySelector(".discover").addEventListener('click', () => {
+      goToSearchPage()});
+    document.querySelector(".search").addEventListener('click', ()=>{
+      goToSearchPage(input.value.trim());
+    });;
+    input.addEventListener("keypress", (e) => {
       if (e.key === 'Enter') {
-          goToSearchPage();
+          goToSearchPage(input.value.trim());
       }});
 })
 
@@ -81,7 +85,8 @@ const createCard = (house) => {
   
 }
 
-const goToSearchPage = () => {
+const goToSearchPage = (query="") => {
+  sessionStorage.setItem("query", query);
   window.location.href = "search.html";
 }
 
