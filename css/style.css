@@ -70,6 +70,10 @@ header button:hover {
    
 }
 
+.search-container{
+    position: relative;
+}
+
 .search-container input{
     padding: 20px 20px;
     width: 50vw;
@@ -77,15 +81,40 @@ header button:hover {
     border-radius: 10px;
 }
 
+.search-container input:focus{
+    border-radius: 10px 10px 0px 0 ;
+}
+
 .hero button {
     position: absolute;
     padding: 10px;
-    font-size: 2rem;
+    font-size: 1.8rem;
     background-color: white;
-    top: 51%;
-    right: 26%;
+    top: 3%;
+    right: 1%;
     color: #036DCE;
     cursor: pointer;
+}
+
+
+
+.history{
+    position: absolute;
+    background-color: white;
+    padding: 20px;
+    top: 101%;
+    width: 100%;
+    border-radius: 0px 0px 10px 10px;
+    border: 1px solid black;
+}
+
+.history p {
+    color: black;
+    font-size: 1rem;
+}
+
+.history i{
+    margin-right: 10px;
 }
 
 .listings {
