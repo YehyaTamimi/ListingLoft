@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelector(".home").addEventListener("click", gotoHomePage);
 
-    let input = document.querySelector(".search-input");
+    const input = document.querySelector(".search-input");
     input.addEventListener("keypress", handleKeyPress);
     document.querySelector(".search").addEventListener('click', () => {
         goToSearchPage(input.value.trim());
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //load content from json file
 const loadcontent = (query = "") => {
     let houses = json["listings"];
-    let container = document.querySelector(".cards-container");
+    const container = document.querySelector(".cards-container");
 
     houses.forEach((house) => {
         const { description, location, list_price } = house;
@@ -82,9 +82,8 @@ const loadcontent = (query = "") => {
 
 //view filter element when a filter is pressed
 const viewFilter = (element) => {
-    let button = document.querySelector(`.${element}-button`);
-    console.log(button)
-    let icon = button.lastElementChild;
+    const button = document.querySelector(`.${element}-button`);
+    const icon = button.lastElementChild;
     if (icon.classList.contains("fa-caret-down")) {
         checkOpenContainers();
         icon.classList.remove("fa-caret-down")
@@ -97,14 +96,14 @@ const viewFilter = (element) => {
     } else {
         icon.classList.remove("fa-caret-up")
         icon.classList.add("fa-caret-down")
-        let container = document.querySelector(`.${element}-container`);
+        const container = document.querySelector(`.${element}-container`);
         container.removeChild(container.lastElementChild);
     }
 }
 
 //create the range element for price/size filter
 const createPriceRangeElement = (element) => {
-    let container = document.querySelector(`.${element}-container`);
+    const container = document.querySelector(`.${element}-container`);
     let type = (element === "price") ? "$" : "M";
 
     let range = document.createElement("div");
@@ -131,7 +130,7 @@ const createPriceRangeElement = (element) => {
 
 //create rooms element for rooms filter
 const createRoomsElement = () => {
-    let container = document.querySelector(".rooms-container");
+    const container = document.querySelector(".rooms-container");
     let type = document.createElement("div");
     type.classList.add("rooms-type");
     type.innerHTML = `
@@ -156,8 +155,8 @@ const createRoomsElement = () => {
 
     container.appendChild(type);
 
-    let bedroomNumber = document.querySelector('.bedrooms-number');
-    let bedroomButtons = bedroomNumber.querySelectorAll('button');
+    const bedroomNumber = document.querySelector('.bedrooms-number');
+    const bedroomButtons = bedroomNumber.querySelectorAll('button');
     bedroomButtons.forEach((button) => {
         button.addEventListener('click', () => {
             console.log(button.textContent[0]);
@@ -167,13 +166,13 @@ const createRoomsElement = () => {
 
 //check if any other filter is open before opening a new filter
 const checkOpenContainers = () => {
-    let containers = ["price", "rooms", "size"];
+    const containers = ["price", "rooms", "size"];
 
     containers.forEach((container) => {
-        let parent = document.querySelector(`.${container}-container`);
+        const parent = document.querySelector(`.${container}-container`);
         if (parent.lastElementChild.tagName == "DIV") {
-            let button = document.querySelector(`.${container}-button`);
-            let icon = button.lastElementChild;
+            const button = document.querySelector(`.${container}-button`);
+            const icon = button.lastElementChild;
             icon.classList.remove("fa-caret-up")
             icon.classList.add("fa-caret-down")
             parent.removeChild(parent.lastElementChild);
@@ -184,7 +183,7 @@ const checkOpenContainers = () => {
 // handle Enter key press for search
 const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-        let input = document.querySelector(".search-input");
+        const input = document.querySelector(".search-input");
         goToSearchPage(input.value.trim());
     }
 }
