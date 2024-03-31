@@ -1,0 +1,243 @@
+@import url('https://fonts.googleapis.com/css2?family=Akshar:wght@300..700&display=swap');
+
+
+* {
+    margin: 0;
+    border: none;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Akshar' ;
+}
+
+body{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+}
+header  {
+    position: fixed;
+    padding: 0% 1%;
+    display: flex;
+    align-items: center;
+    height: 80px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;    width: 100vw;
+    background-color: white;
+    gap: 10px;
+    z-index: 1;
+}
+
+header h1{
+    color: #9C1818;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+header button{
+    padding: 6px 30px;
+    font-size: 1.5rem;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: white;
+    transition: 0.2s ease;
+}
+
+header button:hover {
+    cursor: pointer;
+}
+
+.search-container{
+    position: relative;
+}
+.search-container button{
+    position: absolute;
+    padding: 10px;
+    font-size: 1.1rem;
+    background-color: white;
+    top: 5%;
+    right: 1%;
+    color: #036DCE;
+    border: none;
+}
+header input{
+    padding: 10px 20px;
+    width: 30vw;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    border: 1px solid black;
+}
+
+main{
+    margin-top: 150px;
+
+}
+
+.cards-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px 0;
+    justify-content: center;
+}
+
+
+.card{
+    border-radius: 10px;
+    overflow: hidden;
+    width: 28vw; 
+    height: 40vh;
+    border: 1px solid black;
+    cursor: pointer;
+    transition: 0.3s ease;
+    position: relative;
+}
+
+.card:hover{
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+}
+.card-img{
+    width: 100%;
+    height: 60%;
+    object-fit: cover;
+}
+
+.add-favorite{
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: white;
+    cursor: pointer;
+}
+
+.add-favorite i {
+    font-size: 1.4rem;
+}
+
+.card .info {
+    padding: 8px 5px;
+}
+.card .price {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.price-container, .size-container{
+    position: relative;
+}
+
+.price-range{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin-top: 10px;
+    gap: 20px;
+}
+
+.test{
+    display: flex;
+    gap: 10px;
+}
+
+.price-range .dash{
+    align-self: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.price-range input{
+    width: 100px;
+}
+
+.min-price, .max-price{
+    position: relative;
+}
+
+.min-price p, .max-price p {
+    position: absolute;
+    top: 14%;
+    right: 10px;
+    font-size: 1.5rem;
+}
+
+.rooms-container{
+    position: relative;
+}
+
+.rooms-type{
+    display: block;
+    position: absolute;
+    top: 100%;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.bedrooms-number, .bathrooms-number{
+    display: flex;
+    margin-bottom: 20px;
+
+}
+
+.bedrooms-number button, .bathrooms-number button{
+    font-size: 1rem;
+    border-radius: 0;
+}
+
+.bedrooms-number button:hover, .bathrooms-number button:hover{
+    border: 1px solid #036DCE;
+    background-color: #036cce56;
+    color: white;
+}
+
+.apply{
+
+    background-color: #036DCE;
+    color: white;
+    width: 100%;
+}
+
+.size-range{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin-top: 10px;
+    gap: 20px;
+}
+
+.test{
+    display: flex;
+    gap: 10px;
+}
+
+.size-range .dash{
+    align-self: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.size-range input{
+    width: 100px;
+}
+
+.min-size, .max-size{
+    position: relative;
+}
+
+.min-size p, .max-size p {
+    position: absolute;
+    top: 14%;
+    right: 10px;
+    font-size: 1.5rem;
+}
