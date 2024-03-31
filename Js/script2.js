@@ -12,15 +12,15 @@ let lastOpenContainer;
 document.addEventListener('DOMContentLoaded', () => {
     loadcontent();
     document.querySelector(".price-button").addEventListener("click", () => {
-        viewRange("price")
+        viewFilter("price")
     });
 
     document.querySelector(".size-button").addEventListener("click", () => {
-        viewRange("size")
+        viewFilter("size")
     });
 
     document.querySelector(".rooms-button").addEventListener("click", () => {
-        viewRange("rooms")
+        viewFilter("rooms")
     });
 
     document.querySelector(".home").addEventListener("click", () => {
