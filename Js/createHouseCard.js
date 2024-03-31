@@ -1,14 +1,9 @@
 export const createCard = (house) => {
-    let desc = house["description"];
-    let baths = desc["baths_full"];
-    let beds = desc["beds"];
-    let size = desc["sqft"];
-    let location = house["location"];
-    let city = location["address"]["city"];
-    let state = location["address"]["state"];
-    let street = location["address"]["street_name"];
-    let price = house["list_price"].toLocaleString();
-    let image = house["primary_photo"]["href"];
+    const { description, location, list_price, primary_photo } = house;
+    const { baths_full: baths, beds, sqft: size } = description;
+    const { address: { city, state, street_name: street } } = location;
+    const price = list_price.toLocaleString();
+    const image = primary_photo["href"];
   
     let card = document.createElement("div");
     card.classList.add("card");
