@@ -11,22 +11,12 @@ import { requestListings } from "./requestAPI.js";
 let lastOpenContainer;
 document.addEventListener('DOMContentLoaded', () => {
     loadcontent();
-    document.querySelector(".price-button").addEventListener("click", () => {
-        viewFilter("price")
+    const filterButtons = ["price", "size", "rooms"];
+    filterButtons.forEach((filter) => {
+        document.querySelector(`.${filter}-button`).addEventListener("click", () => {
+            viewFilter(filter);
+        });
     });
-
-    document.querySelector(".size-button").addEventListener("click", () => {
-        viewFilter("size")
-    });
-
-    document.querySelector(".rooms-button").addEventListener("click", () => {
-        viewFilter("rooms")
-    });
-
-    document.querySelector(".home").addEventListener("click", () => {
-        window.location.href = "/html/index.html";
-    })
-
 })
 
 //load content from json file
@@ -96,21 +86,19 @@ const filterRangeContent = (type) => {
     let max = document.querySelector(`.max-${type}-input`).value.trim();
     let container = document.querySelector(".cards-container");
     let cards = container.querySelectorAll(".card");
-    if (type === "price") {
-        cards.forEach((card) => {
+    cards.forEach((card) => {
+        if (type === "price") {
             let price = card.querySelector(".price").textContent.replace(/\,/g, '').split('$')[1];
             if (!(price >= min && price <= max)) {
                 container.removeChild(card);
             }
-        })
-    } else {
-        cards.forEach((card) => {
+        } else {
             let size = card.querySelector(".small-info").textContent.split("|")[2].split(" ")[1];
             if (!(size >= min && size <= max)) {
                 container.removeChild(card);
             }
-        })
-    }
+        }
+    })
 }
 
 
@@ -140,27 +128,21 @@ const createRoomsElement = () => {
 
     container.appendChild(type);
 
-    let bedroomNumber = document.querySelector('.bedrooms-number');
-    let bedroomButtons = bedroomNumber.querySelectorAll('button');
-    bedroomButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-            bedroomButtons.forEach(function (btn) {
-                btn.classList.remove('active');
-            });
-            button.classList.add('active');
-        });
-    });
+    const roomTypes = [".bedrooms-number", ".bathrooms-number"];
 
-    let bathroomNumber = document.querySelector('.bathrooms-number');
-    let bathroomButtons = bathroomNumber.querySelectorAll('button');
-    bathroomButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-            bathroomButtons.forEach(function (btn) {
-                btn.classList.remove('active');
+    //small scale callback-hell ;)
+    roomTypes.forEach((type) => {
+        let rooms = document.querySelector(type);
+        let roombuttons = rooms.querySelectorAll("button");
+        roombuttons.forEach((button) => {
+            button.addEventListener('click', () => {
+                roombuttons.forEach(function (btn) {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
             });
-            button.classList.add('active');
         });
-    });
+    })
 
     container.querySelector(".apply").addEventListener('click', filterRoomContent)
 }
@@ -172,21 +154,22 @@ const filterRoomContent = () => {
     let container = document.querySelector(".cards-container");
     let cards = container.querySelectorAll(".card");
 
-    let bedroomsButtons = document.querySelectorAll('.bedrooms-number button');
-    bedroomsButtons.forEach(function(button) {
-        if (button.classList.contains('active')) {
-            beds = button.textContent[0];
-            beds = (beds === "A") ? "0" : beds;
-        }
-    });
+    const roomTypes = [".bedrooms-number", ".bathrooms-number"];
 
-    let bathroomsButtons = document.querySelectorAll('.bathrooms-number button');
-    bathroomsButtons.forEach(function(button) {
-        if (button.classList.contains('active')) {
-            baths = button.textContent[0];
-            baths = (baths === "A") ? "0" : baths;
-        }
-    });
+    roomTypes.forEach((type) => {
+        let typeButtons = document.querySelectorAll(`${type} button`);
+        typeButtons.forEach((button) => {
+            if (button.classList.contains('active')) {
+                if (type === ".bedrooms-number") {
+                    beds = button.textContent[0];
+                    beds = (beds === "A") ? "0" : beds;
+                } else {
+                    baths = button.textContent[0];
+                    baths = (baths === "A") ? "0" : baths;
+                }
+            }
+        })
+    })
 
     cards.forEach((card) => {
         let bednum = card.querySelector(".small-info").textContent.split("|")[0].split(" ")[0];
