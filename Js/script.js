@@ -34,6 +34,8 @@ const handleKeyPress = (e) => {
 }
 
 const goToSearchPage = () => {
+  const input = document.querySelector(".search-input");
+  sessionStorage.setItem("query", input.value.trim());
   window.location.href = "search.html";
 }
 
@@ -52,4 +54,9 @@ const startswiper = () => {
     },
   });
 }
+
+
+
+
+
 
