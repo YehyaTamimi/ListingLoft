@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //load content from json file
 const loadcontent = (query = "") => {
     let houses = json["listings"];
+    let container = document.querySelector(".cards-container");
 
     houses.forEach((house) => {
         const { description, location, list_price } = house;
@@ -72,6 +73,11 @@ const loadcontent = (query = "") => {
         }
         createCard(house);
     });
+
+    if(container.childNodes.length === 0){
+        container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
+    }
+
 }
 
 //view filter element when a filter is pressed
