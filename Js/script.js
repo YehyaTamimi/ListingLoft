@@ -6,8 +6,8 @@ import { requestListings } from "./requestAPI.js";
 document.addEventListener("DOMContentLoaded", () => {
   startswiper();
   loadcontent();
-  document.querySelector(".discover").addEventListener('click', goToSearchPage)
-  document.querySelector(".search").addEventListener('click', goToSearchPage);;
+  document.querySelector(".discover").addEventListener('click', goToSearchPage);
+  document.querySelector(".search").addEventListener('click', goToSearchPage);
   document.querySelector(".search-input").addEventListener("keypress", handleKeyPress);
 })
 
@@ -20,8 +20,7 @@ const loadcontent = () => {
 
   houses.forEach((house) => {
     if (count === 0) return;
-    let card = createCard(house);
-    container.appendChild(card);
+    createCard(house);
     count--;
   });
 }
