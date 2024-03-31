@@ -106,24 +106,48 @@ const createPriceRangeElement = (element) => {
     range.innerHTML = `
     <div class="test">
         <div class="min-${element}">
-            <input type="text" placeholder="Min">
+            <input type="text" placeholder="Min" class=min-${element}-input>
             <p>${type}</p>
         </div>
         <div class="dash">-</div>
         <div class="max-${element}">
-            <input type="text" placeholder="Max">
+            <input type="text" placeholder="Max" class=max-${element}-input>
             <p>${type}</p>
         </div>
     </div>
+    <p class=reset> Reset Changes </p>
+    <button class=apply> Apply </button>
     `
-    let apply = document.createElement("button");
-    apply.textContent = "Apply";
-    apply.classList.add("apply");
-    range.appendChild(apply);
     container.appendChild(range);
+    container.querySelector(".apply").addEventListener('click', () => {
+        filterRangeContent(element);
+    })
 }
 
-//create rooms element for rooms filter
+//apply filter based on price/size
+const filterRangeContent = (type) => {
+    let min = document.querySelector(`.min-${type}-input`).value.trim();
+    let max = document.querySelector(`.max-${type}-input`).value.trim();
+    let container = document.querySelector(".cards-container");
+    let cards = container.querySelectorAll(".card");
+    if (type === "price") {
+        cards.forEach((card) => {
+            let price = card.querySelector(".price").textContent.replace(/\,/g, '').split('$')[1];
+            if (!(price >= min && price <= max)) {
+                container.removeChild(card);
+            }
+        })
+    } else {
+        cards.forEach((card) => {
+            let size = card.querySelector(".small-info").textContent.split("|")[2].split(" ")[1];
+            if (!(size >= min && size <= max)) {
+                container.removeChild(card);
+            }
+        })
+    }
+}
+
+
 const createRoomsElement = () => {
     let container = document.querySelector(".rooms-container");
     let type = document.createElement("div");
@@ -131,7 +155,7 @@ const createRoomsElement = () => {
     type.innerHTML = `
         <div>Bedrooms</div>
         <div class="bedrooms-number">
-            <button>Any</button>
+            <button class=active>Any</button>
             <button>1+</button>
             <button>2+</button>
             <button>3+</button>
@@ -139,14 +163,14 @@ const createRoomsElement = () => {
         </div>
         <div>Bathrooms</div>
         <div class="bathrooms-number">
-            <button>Any</button>
+            <button class=active>Any</button>
             <button>1+</button>
             <button>2+</button>
             <button>3+</button>
             <button>4+</button>
         </div>
-        <button class="apply">Apply</button>
-    `;
+        <p class=reset2> Reset Changes </p>
+        <button class="apply">Apply</button> `;
 
     container.appendChild(type);
 
@@ -154,9 +178,58 @@ const createRoomsElement = () => {
     let bedroomButtons = bedroomNumber.querySelectorAll('button');
     bedroomButtons.forEach((button) => {
         button.addEventListener('click', () => {
-            console.log(button.textContent[0]);
+            bedroomButtons.forEach(function (btn) {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
         });
     });
+
+    let bathroomNumber = document.querySelector('.bathrooms-number');
+    let bathroomButtons = bathroomNumber.querySelectorAll('button');
+    bathroomButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            bathroomButtons.forEach(function (btn) {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+        });
+    });
+
+    container.querySelector(".apply").addEventListener('click', filterRoomContent)
+}
+
+//apply filter based on rooms
+const filterRoomContent = () => {
+    let baths;
+    let beds;
+    let container = document.querySelector(".cards-container");
+    let cards = container.querySelectorAll(".card");
+
+    let bedroomsButtons = document.querySelectorAll('.bedrooms-number button');
+    bedroomsButtons.forEach(function(button) {
+        if (button.classList.contains('active')) {
+            beds = button.textContent[0];
+            beds = (beds === "A") ? "0" : beds;
+        }
+    });
+
+    let bathroomsButtons = document.querySelectorAll('.bathrooms-number button');
+    bathroomsButtons.forEach(function(button) {
+        if (button.classList.contains('active')) {
+            baths = button.textContent[0];
+            baths = (baths === "A") ? "0" : baths;
+        }
+    });
+
+    cards.forEach((card) => {
+        let bednum = card.querySelector(".small-info").textContent.split("|")[0].split(" ")[0];
+        let bathnum = card.querySelector(".small-info").textContent.split("|")[1].split(" ")[1];
+        if (!(bednum >= beds && bathnum >= baths)) {
+            container.removeChild(card);
+        }
+    })
+
 }
 
 //check if any other filter is open before opening a new filter
