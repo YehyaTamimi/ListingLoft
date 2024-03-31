@@ -1,4 +1,11 @@
+//import hardcoded data from json file
 import json from "./proporties.js";
+
+//import api module to request data
+import { createCard } from "./createHouseCard.js";
+
+//import card module to create house cards
+import { requestListings } from "./requestAPI.js";
 
 
 let lastOpenContainer;
@@ -22,36 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 })
 
-const requestListings = () => {
-    const options = {
-        method: 'GET',
-        headers: {
-            'X-RapidAPI-Key': '41602150d1msh5c4982690c63891p129b85jsn781a18c8417a',
-            'X-RapidAPI-Host': 'us-real-estate-listings.p.rapidapi.com'
-        }
-    };
-
-    const params = {
-        location: 'Metairie, LA',
-        offset: '0',
-        limit: '100',
-    }
-
-    const queryString = new URLSearchParams(params).toString()
-    let url = `https://us-real-estate-listings.p.rapidapi.com/for-sale?${queryString}`
-
-    fetch(url, options)
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            return new Error("Error loading movies");
-        })
-        .then(loadcontent)
-        .catch(err => console.error('error:' + err));
-
-}
-
+//load content from json file
 const loadcontent = () => {
     let houses = json["listings"];
     let container = document.querySelector(".cards-container");
@@ -62,30 +40,8 @@ const loadcontent = () => {
     });
 }
 
-const createCard = (house) => {
-    let desc = house["description"];
-    let baths = desc["baths_full"];
-    let beds = desc["beds"];
-    let size = desc["sqft"];
-    let location = house["location"];
-    let city = location["address"]["city"];
-    let state = location["address"]["state"];
-    let street = location["address"]["street_name"];
-    let price = house["list_price"].toLocaleString();
-    let image = house["primary_photo"]["href"];
-
-    let card = document.createElement("div");
-    card.classList.add("card");
-    card.innerHTML = `<img src="${image}" alt="" class="card-img">
-                        <button class="add-favorite"><i class="fa-regular fa-heart"></i></button>
-                          <div class="info">
-                                <p class="price">$${price}</p>
-                                <p class="small-info">${beds} bed | ${baths} bath | ${size} sqrt | ${street}, ${city}, ${state}</p>
-                          </div>`
-    return card;
-
-}
-const viewRange = (element) => {
+//view filter element when a filter is pressed
+const viewFilter = (element) => {
     let button = document.querySelector(`.${element}-button`);
     console.log(button)
     let icon = button.lastElementChild;
@@ -106,6 +62,7 @@ const viewRange = (element) => {
     }
 }
 
+//create the range element for price/size filter
 const createPriceRangeElement = (element) => {
     let container = document.querySelector(`.${element}-container`);
     let type = (element === "price") ? "$" : "M";
@@ -132,6 +89,7 @@ const createPriceRangeElement = (element) => {
     container.appendChild(range);
 }
 
+//create rooms element for rooms filter
 const createRoomsElement = () => {
     let container = document.querySelector(".rooms-container");
     let type = document.createElement("div");
@@ -167,6 +125,7 @@ const createRoomsElement = () => {
     });
 }
 
+//check if any other filter is open before opening a new filter
 const checkOpenContainers = () => {
     let containers = ["price", "rooms", "size"];
 
