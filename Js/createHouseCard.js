@@ -1,4 +1,5 @@
 export const createCard = (house) => {
+    let container = document.querySelector(".cards-container");
     const { description, location, list_price, primary_photo } = house;
     const { baths_full: baths, beds, sqft: size } = description;
     const { address: { city, state, street_name: street } } = location;
@@ -14,6 +15,6 @@ export const createCard = (house) => {
                                 <p class="price">$${price}</p>
                                 <p class="small-info">${beds} bed | ${baths} bath | ${size} sqrt | ${street}, ${city}, ${state}</p>
                           </div>`
-    return card;
+    container.appendChild(card);
   
   }
