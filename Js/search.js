@@ -8,9 +8,14 @@ import { createCard } from "./createHouseCard.js";
 import { requestListings } from "./requestAPI.js";
 
 
-let lastOpenContainer;
+let query;
 document.addEventListener('DOMContentLoaded', () => {
-    loadcontent();
+    if (sessionStorage.getItem("query") !== null) {
+        query = sessionStorage.getItem("query");
+        loadcontent(query);
+    } else {
+        loadcontent();
+    }
     document.querySelector(".price-button").addEventListener("click", () => {
         viewFilter("price")
     });
@@ -23,20 +28,49 @@ document.addEventListener('DOMContentLoaded', () => {
         viewFilter("rooms")
     });
 
-    document.querySelector(".home").addEventListener("click", () => {
-        window.location.href = "/html/index.html";
-    })
+
+    document.querySelector(".home").addEventListener("click", gotoHomePage);
+
+    let input = document.querySelector(".search-input");
+    input.addEventListener("keypress", handleKeyPress);
+    document.querySelector(".search").addEventListener('click', () => {
+        goToSearchPage(input.value.trim());
+    });
 
 })
 
 //load content from json file
-const loadcontent = () => {
+const loadcontent = (query = "") => {
     let houses = json["listings"];
-    let container = document.querySelector(".cards-container");
 
     houses.forEach((house) => {
-        let card = createCard(house);
-        container.appendChild(card);
+        const { description, location, list_price } = house;
+        const { address: { city, state, street_name } } = location;
+        const size = description["sqft"];
+        const price = list_price;
+
+        if (query !== "") {
+            query = query.toLowerCase();
+            console.log(query);
+            //check if query only contains numbers
+            let isnum = /^\d+$/.test(query);
+            if (isnum === false) {
+                if (!(state.toLowerCase().includes(query) || city.toLowerCase().includes(query) || street_name.toLowerCase().includes(query))) {
+                    return;
+                }
+            } else {
+                if (query.length >= 5) {
+                    if (parseFloat(price) > parseFloat(query)) {
+                        return;
+                    }
+                } else {
+                    if (parseFloat(size) > parseFloat(query)) {
+                        return;
+                    }
+                }
+            }
+        }
+        createCard(house);
     });
 }
 
@@ -139,4 +173,22 @@ const checkOpenContainers = () => {
             parent.removeChild(parent.lastElementChild);
         }
     })
+}
+
+// handle Enter key press for search
+const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+        let input = document.querySelector(".search-input");
+        goToSearchPage(input.value.trim());
+    }
+}
+
+const gotoHomePage = () => {
+    window.location.href = "/html/index.html";
+}
+
+const goToSearchPage = (query = "") => {
+    sessionStorage.setItem("query", query);
+    document.querySelector(".cards-container").innerHTML = "";
+    loadcontent(query);
 }
