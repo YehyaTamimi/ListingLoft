@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
 //load content from json file
 const loadcontent = () => {
   let houses = json["listings"];
-  let container = document.querySelector(".card-container");
   let count = 10;
 
   houses.forEach((house) => {
