@@ -48,8 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector(`.${filter}-button`).addEventListener("click", () => {
             viewFilter(filter);
         });
-        if (filter !== "rooms") {
+        if(filter !== "rooms"){
             filterRangeContent(filter, true);
+        }else{
+            filterRoomContent(true);
         }
     });
 })
@@ -153,12 +155,8 @@ const createPriceRangeElement = (element) => {
 
     });
 
-    [min, max] = loadFilter(element);
-    if (min === "null" && max === "null") {
-        return;
-    }
-    document.querySelector(`.min-${element}-input`).value = min;
-    document.querySelector(`.max-${element}-input`).value = max;
+
+    showSavedInput(element);
 
 }
 
@@ -246,24 +244,33 @@ const createRoomsElement = () => {
                 });
                 button.classList.add('active');
             });
+            showSavedButton(type, button);
         });
     })
 
-    container.querySelector(".apply").addEventListener('click', filterRoomContent)
+    container.querySelector(".apply").addEventListener('click', ()=> {
+        filterRoomContent(false)});
     container.querySelector(".reset2").addEventListener("click", () => {
-        saveFilter("rooms", null, null);
+        resetContent("rooms");
     })
 }
 
 //temporary function
 //apply filter based on rooms
-const filterRoomContent = () => {
+const filterRoomContent = (isHistory) => {
     let baths;
     let beds;
     let container = document.querySelector(".cards-container");
     let cards = container.querySelectorAll(".card");
 
-    const roomTypes = [".bedrooms-number", ".bathrooms-number"];
+    if (isHistory) {
+        [beds, baths] = loadFilter("rooms");
+        console.log(beds);
+        console.log(baths);
+        beds = (beds === "null") ? "0" : beds;
+        baths = (baths === "null") ? "0" : baths;
+    } else {
+        const roomTypes = [".bedrooms-number", ".bathrooms-number"];
 
     roomTypes.forEach((type) => {
         let typeButtons = document.querySelectorAll(`${type} button`);
@@ -279,6 +286,8 @@ const filterRoomContent = () => {
             }
         })
     })
+    }
+
 
     cards.forEach((card) => {
         let bednum = card.querySelector(".small-info").textContent.split("|")[0].split(" ")[0];
@@ -293,6 +302,9 @@ const filterRoomContent = () => {
         return;
     }
     saveFilter("rooms", beds, baths);
+    if(beds !== "0" && baths !== "0"){
+    document.querySelector(`.rooms-button`).classList.add("selected-filter");
+    }
 }
 
 //check if any other filter is open before opening a new filter
@@ -333,17 +345,48 @@ const goToSearchPage = (query = "") => {
 //temporary function
 //reset content after a filter reset
 const resetContent = (element) => {
-    const filters = ["price", "size"];
+    const filters = ["price", "size", "rooms"];
     document.querySelector(".cards-container").innerHTML = "";
-    document.querySelector(`.min-${element}-input`).value = "";
-    document.querySelector(`.max-${element}-input`).value = "";
+    if(element !== "rooms"){
+        document.querySelector(`.min-${element}-input`).value = "";
+        document.querySelector(`.max-${element}-input`).value = "";
+    }
     //reload content from start
     loadcontent();
     saveFilter(element, null, null);
     filters.forEach((filter) => {
         //keep any other filters that are applied
-        filterRangeContent(filter, true);
+        if(filter !== "rooms"){
+            filterRangeContent(filter, true);
+        }else{
+            filterRoomContent(true);
+        }
     });
     document.querySelector(`.${element}-button`).classList.remove("selected-filter");
     viewFilter(element);
+}
+
+const showSavedInput = (element)=>{
+    let min, max;
+    [min, max] = loadFilter(element);
+    if (min === "null" && max === "null") {
+        return;
+    }
+    document.querySelector(`.min-${element}-input`).value = min;
+    document.querySelector(`.max-${element}-input`).value = max;
+}
+
+const showSavedButton = (type, button)=>{
+        let beds, baths;
+        [beds, baths] = loadFilter("rooms")
+        if(type === ".bedrooms-number"){
+            if((button.textContent[0] === "A" && beds === "0") || (button.textContent[0] === beds)){
+                button.classList.add("active");
+            }
+
+        }else{
+            if((button.textContent[0] === "A" && baths === "0") || (button.textContent[0] === baths)){
+                button.classList.add("active");
+            }
+        }
 }
