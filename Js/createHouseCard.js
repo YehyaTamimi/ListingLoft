@@ -4,6 +4,7 @@ export const createCard = (house) => {
     const { address: { city, state, street_name: street } } = location;
     const price = list_price.toLocaleString();
     const image = primary_photo["href"];
+    const container = document.querySelector(".cards-container");
   
     let card = document.createElement("div");
     card.classList.add("card");
@@ -14,6 +15,5 @@ export const createCard = (house) => {
                                 <p class="price">$${price}</p>
                                 <p class="small-info">${beds} bed | ${baths} bath | ${size} sqrt | ${street}, ${city}, ${state}</p>
                           </div>`
-    return card;
-  
+    container.appendChild(card);  
   }
