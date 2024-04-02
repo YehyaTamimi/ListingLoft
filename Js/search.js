@@ -86,6 +86,7 @@ const filterRangeContent = (type) => {
     let max = document.querySelector(`.max-${type}-input`).value.trim();
     let container = document.querySelector(".cards-container");
     let cards = container.querySelectorAll(".card");
+    console.log(typeof min)
     cards.forEach((card) => {
         let value;
         if (type === "price") {
@@ -93,7 +94,9 @@ const filterRangeContent = (type) => {
         } else {
             value = card.querySelector(".small-info").textContent.split("|")[2].split(" ")[1];
         }
-        if (!(value >= min && value <= max)) {
+
+        value = parseInt(value);
+        if (!(value >= parseInt(min) && value <= parseInt(max))) {
             container.removeChild(card);
         }
     })
