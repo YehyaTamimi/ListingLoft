@@ -1,5 +1,6 @@
+
 //create and show the search history
-export const viewSearchHistory = (searchArr) => {
+export const viewSearchHistory = (searchArr, callbackSearch) => {
     if (searchArr.length === 0) {
         return;
     }
@@ -20,8 +21,9 @@ export const viewSearchHistory = (searchArr) => {
         i.classList.add("fa-solid", "fa-clock-rotate-left");
         p.appendChild(i);
         p.appendChild(document.createTextNode(query));
-        p.addEventListener('click', () => {
-            let query = p.lastChild.nodeValue;
+        p.addEventListener('click',() => {
+            
+            callbackSearch(p.lastChild.nodeValue);
         });
         div.appendChild(p);
     }
