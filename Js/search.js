@@ -87,16 +87,14 @@ const filterRangeContent = (type) => {
     let container = document.querySelector(".cards-container");
     let cards = container.querySelectorAll(".card");
     cards.forEach((card) => {
+        let value;
         if (type === "price") {
-            let price = card.querySelector(".price").textContent.replace(/\,/g, '').split('$')[1];
-            if (!(price >= min && price <= max)) {
-                container.removeChild(card);
-            }
+            value = card.querySelector(".price").textContent.replace(/\,/g, '').split('$')[1];
         } else {
-            let size = card.querySelector(".small-info").textContent.split("|")[2].split(" ")[1];
-            if (!(size >= min && size <= max)) {
-                container.removeChild(card);
-            }
+            value = card.querySelector(".small-info").textContent.split("|")[2].split(" ")[1];
+        }
+        if (!(value >= min && value <= max)) {
+            container.removeChild(card);
         }
     })
 }
