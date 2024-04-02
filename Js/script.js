@@ -13,19 +13,22 @@ document.addEventListener("DOMContentLoaded", () => {
     searchArr = JSON.parse(localStorage.getItem('history'));
 }
 
-  document.querySelector(".discover").addEventListener('click', goToSearchPage);
-  document.querySelector(".search").addEventListener('click', goToSearchPage);
-
+  document.querySelector(".discover").addEventListener('click', () => {
+    goToSearchPage()});
   const input = document.querySelector(".search-input");
-  input.addEventListener("keypress", handleKeyPress);
-  input.addEventListener("click", () => {
-    viewSearchHistory(searchArr)}
+    input.addEventListener("keypress", handleKeyPress);
+    document.querySelector(".search").addEventListener('click', () => {
+        goToSearchPage(input.value.trim());
+    });
+    input.addEventListener("click", () => {
+        viewSearchHistory(searchArr, goToSearchPage)
+    }
     );
 
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.search-input')) {
-          closeHistory();
-      }
+        if (!e.target.closest('.search-input')) {
+            closeHistory();
+        }
     });
 
 })
@@ -34,14 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
 //load content from json file
 const loadcontent = () => {
   let houses = json["listings"];
-  let container = document.querySelector(".card-container");
-  let container = document.querySelector(".card-container");
+  let container = document.querySelector(".cards-container");
   let count = 10;
 
   houses.forEach((house) => {
     if (count === 0) return;
-    let card = createCard(house);
-    container.appendChild(card);
+    createCard(house);
     count--;
   });
 }
@@ -49,14 +50,14 @@ const loadcontent = () => {
 // handle Enter key press for search
 const handleKeyPress = (e) => {
   if (e.key === 'Enter') {
-    goToSearchPage();
+    let query = document.querySelector(".search-input").value.trim();
+    goToSearchPage(query);
   }
 }
 
-const goToSearchPage = () => {
-  const input = document.querySelector(".search-input");
-  sessionStorage.setItem("query", input.value.trim());
-  addToSearchHistory(input.value.trim(), searchArr);
+const goToSearchPage = (query="") => {
+  sessionStorage.setItem("query", query);
+  addToSearchHistory(query, searchArr);
   window.location.href = "search.html";
 }
 
