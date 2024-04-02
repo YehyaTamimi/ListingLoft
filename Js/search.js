@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const input = document.querySelector(".search-input");
     input.addEventListener("keypress", handleKeyPress);
+    input.value = query;
     document.querySelector(".search").addEventListener('click', () => {
         goToSearchPage(input.value.trim());
     });
