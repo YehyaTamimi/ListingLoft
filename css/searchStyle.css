@@ -245,3 +245,11 @@ main{
     right: 10px;
     font-size: 1.5rem;
 }
+
+.rooms-filter-applied, .price-filter-applied, .size-filter-applied{
+    display: none;
+}
+
+.empty{
+    font-size: 2rem;
+}
