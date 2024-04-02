@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         goToSearchPage(input.value.trim());
     });
     input.addEventListener("click", () => {
-        viewSearchHistory(searchArr)
+        viewSearchHistory(searchArr, goToSearchPage)
     }
     );
 
@@ -132,15 +132,17 @@ const createPriceRangeElement = (element) => {
     range.innerHTML = `
     <div class="test">
         <div class="min-${element}">
-            <input type="text" placeholder="Min">
+            <input type="text" placeholder="Min" class=min-${element}-input>
             <p>${type}</p>
         </div>
         <div class="dash">-</div>
         <div class="max-${element}">
-            <input type="text" placeholder="Max">
+            <input type="text" placeholder="Max" class=max-${element}-input>
             <p>${type}</p>
         </div>
     </div>
+    <p class=reset> Reset Changes </p>
+    <button class="apply">Apply</button>
     `
 
 
@@ -225,6 +227,7 @@ const createRoomsElement = () => {
             <button>3+</button>
             <button>4+</button>
         </div>
+        <p class=reset2> Reset Changes </p>
         <button class="apply">Apply</button>
     `;
 
