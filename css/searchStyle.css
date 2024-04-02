@@ -49,6 +49,7 @@ header button:hover {
 .search-container{
     position: relative;
 }
+
 .search-container button{
     position: absolute;
     padding: 10px;
@@ -59,12 +60,51 @@ header button:hover {
     color: #036DCE;
     border: none;
 }
+
+.history {
+    position: absolute;
+    top: 100;
+    padding: 8px;
+    border: 1px solid blue;
+    background-color: #ffffff;
+    width: 100%;
+    border-radius: 0 0 10px 10px;
+  }
+  
+  .history p {
+    color: #000000;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+  
+  }
+  
+  .history p:hover {
+    color: rgb(250, 250, 250);
+    background-color: #036DCE;
+    border-radius: 10px;
+  }
+  
+  .history:last-child {
+    margin-bottom: 0px;
+  }
+  
+  .history p .fa-solid {
+    margin-right: 10px;
+  }
+
+
 header input{
     padding: 10px 20px;
     width: 30vw;
     font-size: 1.2rem;
     border-radius: 10px;
     border: 1px solid black;
+}
+
+.search-container input:focus{
+    border-radius: 10px 10px 0 0 ;
 }
 
 main{
@@ -240,4 +280,24 @@ main{
     top: 14%;
     right: 10px;
     font-size: 1.5rem;
+}
+
+.reset, .reset2{
+    color: #036DCE;
+    align-self: start;
+}
+
+.reset:hover, .reset2:hover {
+    color: red;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.reset2{
+    margin-bottom: 10px;
+}
+
+.selected-filter{
+    border: 1px solid #036DCE;
+    background-color: #036cce41;
 }
