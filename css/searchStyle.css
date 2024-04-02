@@ -80,6 +80,10 @@ main{
     justify-content: center;
 }
 
+.empty{
+    align-self: center;
+    font-size: 2rem;
+}
 
 .card{
     border-radius: 10px;
