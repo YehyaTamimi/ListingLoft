@@ -6,8 +6,8 @@ import { requestListings } from "./requestAPI.js";
 document.addEventListener("DOMContentLoaded", () => {
   startswiper();
   loadcontent();
-  document.querySelector(".discover").addEventListener('click', goToSearchPage)
-  document.querySelector(".search").addEventListener('click', goToSearchPage);;
+  document.querySelector(".discover").addEventListener('click', goToSearchPage);
+  document.querySelector(".search").addEventListener('click', goToSearchPage);
   document.querySelector(".search-input").addEventListener("keypress", handleKeyPress);
 })
 
@@ -15,13 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
 //load content from json file
 const loadcontent = () => {
   let houses = json["listings"];
-  let container = document.querySelector(".card-container");
   let count = 10;
 
   houses.forEach((house) => {
     if (count === 0) return;
-    let card = createCard(house);
-    container.appendChild(card);
+    createCard(house);
     count--;
   });
 }
@@ -34,6 +32,8 @@ const handleKeyPress = (e) => {
 }
 
 const goToSearchPage = () => {
+  const input = document.querySelector(".search-input");
+  sessionStorage.setItem("query", input.value.trim());
   window.location.href = "search.html";
 }
 
@@ -52,4 +52,3 @@ const startswiper = () => {
     },
   });
 }
-
