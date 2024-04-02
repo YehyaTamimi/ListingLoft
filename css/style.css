@@ -70,12 +70,64 @@ header button:hover {
    
 }
 
+.search-container{
+    position: relative;
+}
+
+.search-container input:focus{
+    border-radius: 10px 10px 0 0 ;
+}
+
+.search-container .search{
+    position: absolute;
+    padding: 10px;
+    font-size: 1.6rem;
+    background-color: white;
+    top: 6%;
+    right: 1%;
+    color: #036DCE;
+    border: none;
+}
+
 .search-container input{
     padding: 20px 20px;
     width: 50vw;
     font-size: 1.2rem;
     border-radius: 10px;
 }
+
+.history {
+    position: absolute;
+    top: 100;
+    padding: 8px;
+    border: 1px solid blue;
+    background-color: #ffffff;
+    width: 100%;
+    border-radius: 0 0 10px 10px;
+  }
+  
+  .history p {
+    color: #000000;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+  
+  }
+  
+  .history p:hover {
+    color: rgb(250, 250, 250);
+    background-color: #036DCE;
+    border-radius: 10px;
+  }
+  
+  .history:last-child {
+    margin-bottom: 0px;
+  }
+  
+  .history p .fa-solid {
+    margin-right: 10px;
+  }
 
 .hero button {
     position: absolute;
@@ -108,7 +160,7 @@ header button:hover {
     justify-content: center;
 } */ 
 
-card{
+.card{
     position: relative;
     border-radius: 10px;
     overflow: hidden;
