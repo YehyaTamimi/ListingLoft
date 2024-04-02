@@ -73,7 +73,7 @@ const loadcontent = (query = "") => {
         }
         createCard(house);
     });
-
+    
     if(container.childNodes.length === 0){
         container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
     }
