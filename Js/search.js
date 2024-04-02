@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         loadcontent();
     }
-    
+
 
     document.querySelector(".home").addEventListener("click", gotoHomePage);
 
@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector(".search").addEventListener('click', () => {
         goToSearchPage(input.value.trim());
     });
-  
-   const filterButtons = ["price", "size", "rooms"];
+
+    const filterButtons = ["price", "size", "rooms"];
     filterButtons.forEach((filter) => {
         document.querySelector(`.${filter}-button`).addEventListener("click", () => {
             viewFilter(filter);
@@ -70,8 +70,8 @@ const loadcontent = (query = "") => {
         }
         createCard(house);
     });
-    
-    if(container.childNodes.length === 0){
+
+    if (container.childNodes.length === 0) {
         container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
     }
 
@@ -123,6 +123,7 @@ const createPriceRangeElement = (element) => {
     container.appendChild(range);
     container.querySelector(".apply").addEventListener('click', () => {
         filterRangeContent(element);
+        viewFilter(element);
     })
 }
 
@@ -143,9 +144,14 @@ const filterRangeContent = (type) => {
 
         value = parseInt(value);
         if (!(value >= parseInt(min) && value <= parseInt(max))) {
-            container.removeChild(card);
+            // container.removeChild(card);
+            card.classList.add(`${type}-filter-applied`)
+        } else {
+            card.classList.remove(`${type}-filter-applied`)
         }
-    })
+    });
+
+    checkEmptyCardsContainer();
 }
 
 
@@ -191,7 +197,9 @@ const createRoomsElement = () => {
         });
     })
 
-    container.querySelector(".apply").addEventListener('click', filterRoomContent)
+    container.querySelector(".apply").addEventListener('click', ()=>{
+        filterRoomContent();
+        viewFilter("rooms");});
 }
 
 //apply filter based on rooms
@@ -222,10 +230,13 @@ const filterRoomContent = () => {
         let bednum = card.querySelector(".small-info").textContent.split("|")[0].split(" ")[0];
         let bathnum = card.querySelector(".small-info").textContent.split("|")[1].split(" ")[1];
         if (!(bednum >= beds && bathnum >= baths)) {
-            container.removeChild(card);
+            card.classList.add(`rooms-filter-applied`);
+        } else {
+            card.classList.remove("rooms-filter-applied");
         }
     })
 
+    checkEmptyCardsContainer();
 }
 
 //check if any other filter is open before opening a new filter
@@ -260,4 +271,29 @@ const goToSearchPage = (query = "") => {
     sessionStorage.setItem("query", query);
     document.querySelector(".cards-container").innerHTML = "";
     loadcontent(query);
+}
+
+
+//check if there are any cards not hidden
+const checkEmptyCardsContainer = () => {
+
+    const container = document.querySelector(".cards-container");
+
+    const cards = container.querySelectorAll(".card");
+
+    if (container.lastElementChild.tagName === "P") {
+        container.removeChild(container.lastElementChild);
+
+    }
+
+    for (let i = 0; i < cards.length; i++) {
+        let style = window.getComputedStyle(cards[i]);
+        if (style.display !== 'none') {
+            return;
+        }
+    }
+    const p = document.createElement("p");
+    p.classList.add("empty");
+    p.innerHTML = "No Matching Results Were Found";
+    container.appendChild(p);
 }
