@@ -14,6 +14,7 @@ import { viewSearchHistory, addToSearchHistory, saveFilter, loadFilter, closeHis
 
 let query;
 let searchArr = [];
+let favorites = [];
 document.addEventListener('DOMContentLoaded', () => {
     if(localStorage.getItem("favorite") !== null){
         favorites = JSON.parse(localStorage.getItem("favorite"));
