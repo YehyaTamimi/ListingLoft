@@ -246,6 +246,15 @@ main{
     font-size: 1.5rem;
 }
 
+
 .add-favorites .fa-solid{
     color: #9C1818;
+}
+
+.rooms-filter-applied, .price-filter-applied, .size-filter-applied{
+    display: none;
+}
+
+.empty{
+    font-size: 2rem;
 }
