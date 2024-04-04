@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Akshar:wght@300..700&display=swap');
+
+
+* {
+    margin: 0;
+    border: none;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Akshar' ;
+}
+
+body{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+}
+header  {
+    position: fixed;
+    padding: 0% 1%;
+    display: flex;
+    align-items: center;
+    height: 80px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;    width: 100vw;
+    background-color: white;
+    gap: 10px;
+    z-index: 1;
+    justify-content: center;
+}
+
+header h1{
+    color: #9C1818;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+header button{
+    padding: 6px 30px;
+    font-size: 1.5rem;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: white;
+    transition: 0.2s ease;
+}
+
+
+
+main{
+    margin-top: 150px;
+
+}
+
+.cards-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px 0;
+    justify-content: center;
+}
+
+.empty{
+    align-self: center;
+    font-size: 2rem;
+}
+
+.card{
+    border-radius: 10px;
+    overflow: hidden;
+    width: 28vw; 
+    height: 40vh;
+    border: 1px solid black;
+    cursor: pointer;
+    transition: 0.3s ease;
+    position: relative;
+}
+
+.card:hover{
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+}
+.card-img{
+    width: 100%;
+    height: 60%;
+    object-fit: cover;
+}
+
+.add-favorite{
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: white;
+    cursor: pointer;
+}
+
+.add-favorite i {
+    font-size: 1.4rem;
+}
+
+.card .info {
+    padding: 8px 5px;
+}
+.card .price {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.search-container{
+    position: relative;
+}
+.search-container button{
+    position: absolute;
+    padding: 10px;
+    font-size: 1.6rem;
+    background-color: white;
+    top: 48%;
+    right: 1%;
+    color: #036DCE;
+    border: none;
+    cursor: pointer;
+}
+.search-container input{
+    padding: 20px 20px;
+    width: 50vw;
+    font-size: 1.2rem;
+    border-radius: 10px;
+}
+
+.empty-favorites{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-favorites{
+    align-self: center;
+    padding: 100px ;
+    background-color: rgb(215, 211, 203);
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+
+}
+
+.no-favorites p {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.removed {
+    display: flex;
+    padding: 20px;
+    background-color: rgb(20, 31, 76);
+    color: white;
+    position: fixed;
+    z-index: 1;
+    bottom: 1%;
+    right: 1%;
+    transition: opacity 0.3s ease-in-out; /* Adjust the duration and easing as needed */
+    opacity: 1;
+}
+
+.removed button{
+    background-color: transparent;
+    color: white;
+}
+
+.relative-body{
+    position: relative;
+}
+
+.remove-transition {
+    opacity: 0;
+}
+
+.add-favorites .fa-solid{
+    color: #9C1818;
+}

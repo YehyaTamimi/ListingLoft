@@ -11,9 +11,15 @@ import { requestListings } from "./requestAPI.js";
 import { viewSearchHistory, addToSearchHistory, saveFilter, loadFilter, closeHistory } from "./history.js";
 
 
+
 let query;
 let searchArr = [];
 document.addEventListener('DOMContentLoaded', () => {
+    if(localStorage.getItem("favorite") !== null){
+        favorites = JSON.parse(localStorage.getItem("favorite"));
+        console.log(favorites)
+    }
+  
     if (sessionStorage.getItem("query") !== null) {
         query = sessionStorage.getItem("query");
         loadcontent(query);
@@ -29,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector(".home").addEventListener("click", gotoHomePage);
 
     const input = document.querySelector(".search-input");
+    input.value = query;
     input.addEventListener("keypress", handleKeyPress);
     document.querySelector(".search").addEventListener('click', () => {
         goToSearchPage(input.value.trim());
@@ -58,9 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 //load content from json file
-const loadcontent = () => {
+const loadcontent = (query = "") => {
     let houses = json["listings"];
-    let container = document.querySelector(".cards-container");
+    const container = document.querySelector(".cards-container");
 
     houses.forEach((house) => {
         const { description, location, list_price } = house;
@@ -89,7 +96,6 @@ const loadcontent = () => {
                 }
             }
         }
-        console.log("here");
         createCard(house);
     });
 
@@ -97,13 +103,15 @@ const loadcontent = () => {
         container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
     }
 
+
+    checkFavorites();
+
 }
 
 //view filter element when a filter is pressed
 const viewFilter = (element) => {
-    let button = document.querySelector(`.${element}-button`);
-    console.log(button)
-    let icon = button.lastElementChild;
+    const button = document.querySelector(`.${element}-button`);
+    const icon = button.lastElementChild;
     if (icon.classList.contains("fa-caret-down")) {
         checkOpenContainers();
         icon.classList.remove("fa-caret-down")
@@ -116,14 +124,14 @@ const viewFilter = (element) => {
     } else {
         icon.classList.remove("fa-caret-up")
         icon.classList.add("fa-caret-down")
-        let container = document.querySelector(`.${element}-container`);
+        const container = document.querySelector(`.${element}-container`);
         container.removeChild(container.lastElementChild);
     }
 }
 
 //create the range element for price/size filter
 const createPriceRangeElement = (element) => {
-    let container = document.querySelector(`.${element}-container`);
+    const container = document.querySelector(`.${element}-container`);
     let type = (element === "price") ? "$" : "M";
     let min, max;
 
@@ -142,6 +150,7 @@ const createPriceRangeElement = (element) => {
         </div>
     </div>
     <p class=reset> Reset Changes </p>
+
     <button class="apply">Apply</button>
     `
 
@@ -184,18 +193,22 @@ const filterRangeContent = (type, isHistory) => {
     let cards = container.querySelectorAll(".card");
 
     cards.forEach((card) => {
+        let value;
         if (type === "price") {
-            let price = card.querySelector(".price").textContent.replace(/\,/g, '').split('$')[1];
-            if (!(price >= min && price <= max)) {
-                container.removeChild(card);
-            }
+            value = card.querySelector(".price").textContent.replace(/\,/g, '').split('$')[1];
         } else {
-            let size = card.querySelector(".small-info").textContent.split("|")[2].split(" ")[1];
-            if (!(size >= min && size <= max)) {
-                container.removeChild(card);
-            }
+            value = card.querySelector(".small-info").textContent.split("|")[2].split(" ")[1];
         }
-    })
+
+        value = parseInt(value);
+        if (!(value >= parseInt(min) && value <= parseInt(max))) {
+            // container.removeChild(card);
+            card.classList.add(`${type}-filter-applied`)
+        } else {
+            card.classList.remove(`${type}-filter-applied`)
+        }
+    });
+
 
     if (container.childNodes.length === 0) {
         container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
@@ -203,17 +216,18 @@ const filterRangeContent = (type, isHistory) => {
     }
     saveFilter(type, min, max);
     document.querySelector(`.${type}-button`).classList.add("selected-filter");
+    checkEmptyCardsContainer();
 }
 
 
 const createRoomsElement = () => {
-    let container = document.querySelector(".rooms-container");
+    const container = document.querySelector(".rooms-container");
     let type = document.createElement("div");
     type.classList.add("rooms-type");
     type.innerHTML = `
         <div>Bedrooms</div>
         <div class="bedrooms-number">
-            <button>Any</button>
+            <button class=active>Any</button>
             <button>1+</button>
             <button>2+</button>
             <button>3+</button>
@@ -221,18 +235,16 @@ const createRoomsElement = () => {
         </div>
         <div>Bathrooms</div>
         <div class="bathrooms-number">
-            <button>Any</button>
+            <button class=active>Any</button>
             <button>1+</button>
             <button>2+</button>
             <button>3+</button>
             <button>4+</button>
         </div>
         <p class=reset2> Reset Changes </p>
-        <button class="apply">Apply</button>
-    `;
+        <button class="apply">Apply</button>`;
 
     container.appendChild(type);
-
 
     const roomTypes = [".bedrooms-number", ".bathrooms-number"];
 
@@ -242,11 +254,13 @@ const createRoomsElement = () => {
         let roombuttons = rooms.querySelectorAll("button");
         roombuttons.forEach((button) => {
             button.addEventListener('click', () => {
+
                 roombuttons.forEach((btn) => {
                     btn.classList.remove('active');
                 });
                 button.classList.add('active');
             });
+
             showSavedButton(type, button);
         });
     })
@@ -265,6 +279,7 @@ const filterRoomContent = (isHistory) => {
     let beds;
     let container = document.querySelector(".cards-container");
     let cards = container.querySelectorAll(".card");
+
 
     if (isHistory) {
         [beds, baths] = loadFilter("rooms");
@@ -289,14 +304,19 @@ const filterRoomContent = (isHistory) => {
             }
         })
     })
-    }
+
+   }
+
 
 
     cards.forEach((card) => {
         let bednum = card.querySelector(".small-info").textContent.split("|")[0].split(" ")[0];
         let bathnum = card.querySelector(".small-info").textContent.split("|")[1].split(" ")[1];
-        if (!(bednum >= beds && bathnum >= baths)) {
-            container.removeChild(card);
+
+        if (( parseInt(beds) === 0  || parseInt(bednum) === parseInt(beds)) && (parseInt(baths) === 0 || parseInt(bathnum) === parseInt(baths))) {
+            card.classList.remove("rooms-filter-applied");
+        } else {
+            card.classList.add("rooms-filter-applied");
         }
     })
 
@@ -308,17 +328,20 @@ const filterRoomContent = (isHistory) => {
     if(beds !== "0" && baths !== "0"){
     document.querySelector(`.rooms-button`).classList.add("selected-filter");
     }
+
+    checkEmptyCardsContainer();
+
 }
 
 //check if any other filter is open before opening a new filter
 const checkOpenContainers = () => {
-    let containers = ["price", "rooms", "size"];
+    const containers = ["price", "rooms", "size"];
 
     containers.forEach((container) => {
-        let parent = document.querySelector(`.${container}-container`);
+        const parent = document.querySelector(`.${container}-container`);
         if (parent.lastElementChild.tagName == "DIV") {
-            let button = document.querySelector(`.${container}-button`);
-            let icon = button.lastElementChild;
+            const button = document.querySelector(`.${container}-button`);
+            const icon = button.lastElementChild;
             icon.classList.remove("fa-caret-up")
             icon.classList.add("fa-caret-down")
             parent.removeChild(parent.lastElementChild);
@@ -341,6 +364,7 @@ const gotoHomePage = () => {
 const goToSearchPage = (query = "") => {
     sessionStorage.setItem("query", query);
     document.querySelector(".cards-container").innerHTML = "";
+
     addToSearchHistory(query, searchArr);
     window.location.href = "search.html";
 }
@@ -392,4 +416,39 @@ const showSavedButton = (type, button)=>{
                 button.classList.add("active");
             }
         }
+}
+
+
+const checkFavorites = ()=>{
+    favorites.forEach((card) => {
+        const element = document.querySelector(`.${card}`)
+        const icon = element.querySelector(".add-favorite i");
+        console.log(icon)
+        icon.classList.add("fa-solid");
+    })
+}
+
+
+//check if there are any cards not hidden
+const checkEmptyCardsContainer = () => {
+
+    const container = document.querySelector(".cards-container");
+
+    const cards = container.querySelectorAll(".card");
+
+    if (container.lastElementChild.tagName === "P") {
+        container.removeChild(container.lastElementChild);
+
+    }
+
+    for (let i = 0; i < cards.length; i++) {
+        let style = window.getComputedStyle(cards[i]);
+        if (style.display !== 'none') {
+            return;
+        }
+    }
+    const p = document.createElement("p");
+    p.classList.add("empty");
+    p.innerHTML = "No Matching Results Were Found";
+    container.appendChild(p);
 }

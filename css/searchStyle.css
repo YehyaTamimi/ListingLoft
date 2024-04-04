@@ -120,6 +120,10 @@ main{
     justify-content: center;
 }
 
+.empty{
+    align-self: center;
+    font-size: 2rem;
+}
 
 .card{
     border-radius: 10px;
@@ -282,6 +286,7 @@ main{
     font-size: 1.5rem;
 }
 
+
 .reset, .reset2{
     color: #036DCE;
     align-self: start;
@@ -305,4 +310,16 @@ main{
 .active{
     border: 1px solid #036DCE;
     background-color: #036cce41;
+}
+
+.add-favorites .fa-solid{
+    color: #9C1818;
+}
+
+.rooms-filter-applied, .price-filter-applied, .size-filter-applied{
+    display: none;
+}
+
+.empty{
+    font-size: 2rem;
 }
