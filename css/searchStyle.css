@@ -245,3 +245,7 @@ main{
     right: 10px;
     font-size: 1.5rem;
 }
+
+.add-favorites .fa-solid{
+    color: #9C1818;
+}
