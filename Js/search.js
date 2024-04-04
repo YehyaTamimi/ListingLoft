@@ -9,7 +9,14 @@ import { requestListings } from "./requestAPI.js";
 
 
 let query;
+let favorites = [];
+
 document.addEventListener('DOMContentLoaded', () => {
+    if(localStorage.getItem("favorite") !== null){
+        favorites = JSON.parse(localStorage.getItem("favorite"));
+        console.log(favorites)
+    }
+
 
     if (sessionStorage.getItem("query") !== null) {
         query = sessionStorage.getItem("query");
@@ -17,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         loadcontent();
     }
+
 
 
     document.querySelector(".home").addEventListener("click", gotoHomePage);
@@ -75,6 +83,7 @@ const loadcontent = (query = "") => {
         container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
     }
 
+    checkFavorites();
 }
 
 //view filter element when a filter is pressed
@@ -271,6 +280,16 @@ const goToSearchPage = (query = "") => {
     sessionStorage.setItem("query", query);
     document.querySelector(".cards-container").innerHTML = "";
     loadcontent(query);
+}
+
+
+const checkFavorites = ()=>{
+    favorites.forEach((card) => {
+        const element = document.querySelector(`.${card}`)
+        const icon = element.querySelector(".add-favorite i");
+        console.log(icon)
+        icon.classList.add("fa-solid");
+    })
 }
 
 
