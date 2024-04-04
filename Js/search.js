@@ -242,7 +242,7 @@ const createRoomsElement = () => {
         let roombuttons = rooms.querySelectorAll("button");
         roombuttons.forEach((button) => {
             button.addEventListener('click', () => {
-                roombuttons.forEach(function (btn) {
+                roombuttons.forEach((btn) => {
                     btn.classList.remove('active');
                 });
                 button.classList.add('active');
