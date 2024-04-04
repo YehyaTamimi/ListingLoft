@@ -228,7 +228,7 @@ const createRoomsElement = () => {
     type.innerHTML = `
         <div>Bedrooms</div>
         <div class="bedrooms-number">
-            <button class=active>Any</button>
+            <button>Any</button>
             <button>1+</button>
             <button>2+</button>
             <button>3+</button>
@@ -236,7 +236,7 @@ const createRoomsElement = () => {
         </div>
         <div>Bathrooms</div>
         <div class="bathrooms-number">
-            <button class=active>Any</button>
+            <button>Any</button>
             <button>1+</button>
             <button>2+</button>
             <button>3+</button>
