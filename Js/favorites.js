@@ -1,7 +1,8 @@
 import json from "./proporties.js";
 import { createCard } from "./createHouseCard.js";
+import { viewSearchHistory, addToSearchHistory, closeHistory } from "./history.js";
 
-
+let searchArr = [];
 document.addEventListener("DOMContentLoaded", () => {
 
     let favorites = [];
@@ -9,7 +10,27 @@ document.addEventListener("DOMContentLoaded", () => {
         favorites = JSON.parse(localStorage.getItem("favorite"));
     }
     loadFavorites(favorites);
+
+    if (localStorage.getItem('history') !== null) {
+        searchArr = JSON.parse(localStorage.getItem('history'));
+    }
+    
     document.querySelector(".home").addEventListener("click", gotoHomePage);
+    const input = document.querySelector(".search-input");
+    input.addEventListener("keypress", handleKeyPress);
+    document.querySelector(".search").addEventListener('click', () => {
+        goToSearchPage(input.value.trim());
+    });
+    input.addEventListener("click", () => {
+        viewSearchHistory(searchArr, goToSearchPage)
+    }
+    );
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-input')) {
+            closeHistory();
+        }
+    });
 
     try {
         const favorites = document.querySelectorAll(".add-favorite");
@@ -95,12 +116,13 @@ const createSearch = (container) => {
 // handle Enter key press for search
 const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-        goToSearchPage();
+      let query = document.querySelector(".search-input").value.trim();
+      goToSearchPage(query);
     }
-}
+  }
 
-const goToSearchPage = () => {
-    const input = document.querySelector(".search-input");
-    sessionStorage.setItem("query", input.value.trim());
+const goToSearchPage = (query="") => {
+    sessionStorage.setItem("query", query);
+    addToSearchHistory(query, searchArr);
     window.location.href = "search.html";
-}
+  }
