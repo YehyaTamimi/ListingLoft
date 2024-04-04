@@ -229,10 +229,10 @@ const filterRoomContent = () => {
     cards.forEach((card) => {
         let bednum = card.querySelector(".small-info").textContent.split("|")[0].split(" ")[0];
         let bathnum = card.querySelector(".small-info").textContent.split("|")[1].split(" ")[1];
-        if (!(bednum >= beds && bathnum >= baths)) {
-            card.classList.add(`rooms-filter-applied`);
-        } else {
+        if (( parseInt(beds) === 0  || parseInt(bednum) === parseInt(beds)) && (parseInt(baths) === 0 || parseInt(bathnum) === parseInt(baths))) {
             card.classList.remove("rooms-filter-applied");
+        } else {
+            card.classList.add("rooms-filter-applied");
         }
     })
 
