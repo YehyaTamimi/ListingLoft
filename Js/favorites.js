@@ -11,35 +11,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     loadFavorites(favorites);
 
-    if (localStorage.getItem('history') !== null) {
-        searchArr = JSON.parse(localStorage.getItem('history'));
-    }
     
     document.querySelector(".home").addEventListener("click", gotoHomePage);
-    const input = document.querySelector(".search-input");
-    input.addEventListener("keypress", handleKeyPress);
-    document.querySelector(".search").addEventListener('click', () => {
-        goToSearchPage(input.value.trim());
-    });
-    input.addEventListener("click", () => {
-        viewSearchHistory(searchArr, goToSearchPage)
-    }
-    );
 
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.search-input')) {
-            closeHistory();
-        }
-    });
-
-    try {
-        const favorites = document.querySelectorAll(".add-favorite");
-        favorites.forEach((favorite) => {
+    const favorite = document.querySelectorAll(".add-favorite");
+    if(favorite.length !== 0){
+        favorite.forEach((favorite) => {
             favorite.addEventListener("click", removeFavorite)
             const icon = favorite.querySelector("i");
             icon.classList.add("fa-solid");
         })
-    } catch {
+    } else {
+        if (localStorage.getItem('history') !== null) {
+            searchArr = JSON.parse(localStorage.getItem('history'));
+        }
+        const input = document.querySelector(".search-input");
+        input.addEventListener("keypress", handleKeyPress);
+        document.querySelector(".search").addEventListener('click', () => {
+        goToSearchPage(input.value.trim());
+        });
+        input.addEventListener("click", () => {
+        viewSearchHistory(searchArr, goToSearchPage)
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-input')) {
+            closeHistory();
+            }
+        });
         
     }
 })
