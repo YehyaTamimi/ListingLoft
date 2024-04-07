@@ -11,7 +11,9 @@ export const createCard = (house) => {
 
     let card = document.createElement("div");
     card.classList.add("card");
+    if(window.location.pathname.includes("index.html")){
     card.classList.add("swiper-slide");
+    }
     card.classList.add(`h${property_id}`);
     card.innerHTML = `<img src="${image}" alt="" class="card-img">
                           <button class="add-favorite"><i class="fa-regular fa-heart"></i></button>
