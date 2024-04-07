@@ -324,6 +324,18 @@ main{
     font-size: 2rem;
 }
 
+
+@media screen and (max-width:  1130px){
+    .price-range, .size-range, .rooms-type{
+        right: 0;
+    }
+
+    .price-range .apply, .size-range .apply, .rooms-type .apply{
+        font-size: 1rem;
+    }
+}
+
+
 @media screen and (max-width:  905px){
     header h1{
         margin-right: 1px;
@@ -338,12 +350,70 @@ main{
         height: 300px;
     }
 
+    header h1{
+        font-size: 1.5rem;
+    }
+
+    .price-button, .rooms-button, .size-button{
+        font-size: 1.2rem;
+    }
+
+
+    .min-price p, .max-price p, .min-size p, .max-size p{
+        font-size: 1.2rem;
+    }
+
+    header input{
+        padding: 9px 20px;
+        font-size: 1rem;
+    }
+
+    .search-container button{
+        padding: 8px;
+        font-size: 1rem;
+        top: 5%;
+        right: 1%;
+    }
+
+}
+
+@media screen and (max-width:  770px){
+    .price-button, .rooms-button, .size-button{
+        font-size: 1rem;
+        padding: 6px 25px;
+    }
+
+    .price-range, .size-range, .rooms-type{
+        right: 0;
+    }
+
+    header input{
+        padding: 7px 20px;
+        font-size: 1rem;
+    }
+
+    .search-container button{
+        padding: 7px;
+        font-size: 0.8rem;
+        top: 5%;
+        right: 1%;
+    }
+
 }
 
 @media screen and (max-width:  720px){
     .card{
         width: 300px;
         height: 300px;
+    }
+
+}
+
+@media screen and (max-width:  685px){
+
+    .price-button, .rooms-button, .size-button{
+        font-size: 1rem;
+        padding: 6px 20px;
     }
 
 }
