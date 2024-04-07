@@ -96,7 +96,6 @@ const createPopup = (house, fav) => {
     
     body.appendChild(popup);
 
-    
     photos.forEach((photo) => {
         createImage(photo);
     })
@@ -109,31 +108,16 @@ const createPopup = (house, fav) => {
       });
 
     document.querySelector(".close-popup").addEventListener("click", ()=>{
-        body.removeChild(popup);
-        body.removeChild(overlay)
-        body.classList.remove("disabled")
+        closePopup(body, popup, overlay);
     })
 
-
     const favorite = document.querySelector(".favorite-popup");
-
     if(fav.querySelector("i").classList[2] == "fa-solid"){
         const favIcon = favorite.querySelector("i");
         favIcon.classList.add("fa-solid");
     }
-
     favorite.addEventListener("click", ()=>{
-        const favIcon = favorite.querySelector("i");
-        const icon = fav.querySelector("i");
-        if(icon.classList[2] == "fa-solid" || favIcon.classList[2] == "fa-solid"){
-            icon.classList.remove("fa-solid");
-            favIcon.classList.remove("fa-solid")
-        }else{
-            icon.classList.add("fa-solid");
-            favIcon.classList.add("fa-solid");
-        }
-        addToFavorites(`h${property_id}`)
-
+        changeHeart(favorite, fav, property_id);
     })
 }
 
@@ -148,3 +132,21 @@ const createImage = (photo) =>{
 }
 
 
+const closePopup = (body, popup, overlay)=>{
+    body.removeChild(popup);
+    body.removeChild(overlay);
+    body.classList.remove("disabled");
+}
+
+const changeHeart = (favorite, fav, property_id)=>{
+    const favIcon = favorite.querySelector("i");
+    const icon = fav.querySelector("i");
+    if(icon.classList[2] == "fa-solid" || favIcon.classList[2] == "fa-solid"){
+        icon.classList.remove("fa-solid");
+        favIcon.classList.remove("fa-solid")
+    }else{
+        icon.classList.add("fa-solid");
+        favIcon.classList.add("fa-solid");
+    }
+    addToFavorites(`h${property_id}`)
+}
