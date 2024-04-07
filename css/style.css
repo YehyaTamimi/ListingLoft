@@ -217,8 +217,8 @@ header button:hover {
   .swiper-slide {
 
     margin-top: 20px;
-    width: 25vw !important ; /* Set the desired width for your cards */
-    height: 38vh !important; /* Set the desired height for your cards */
+    width: 400px !important;
+    height: 300px !important;
     border-radius: 5px;
     overflow: hidden;
     border: 1px solid black;
@@ -252,18 +252,28 @@ header button:hover {
     scale: 1.05;
 }
 
-@media screen and (max-width:  600px) {
-    .swiper-slide {
-      width: 60vw !important;
+@media screen and (max-width:  680px) {
+
+    header{
+        padding: 0 1%;
+        justify-content: space-between;
+    }
+
+    .hero p {
+        font-size: 1.5rem;
+    }
+
+    .search-container input{
+        width: 70vw;
+    }
+    .swiper-slide{
+        width: 350px !important;
     }
   }
-  
 
+@media screen and (max-width:  420px){
+    .hero p {
+        font-size: 1.3rem;
+    }
 
-
-
-
-
-  .add-favorites .fa-solid{
-    color: #9C1818;
 }
