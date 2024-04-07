@@ -1,7 +1,8 @@
 import json from "./proporties.js";
 import { createCard } from "./createHouseCard.js";
+import { viewSearchHistory, addToSearchHistory, closeHistory } from "./history.js";
 
-
+let searchArr = [];
 document.addEventListener("DOMContentLoaded", () => {
 
     let favorites = [];
@@ -9,17 +10,19 @@ document.addEventListener("DOMContentLoaded", () => {
         favorites = JSON.parse(localStorage.getItem("favorite"));
     }
     loadFavorites(favorites);
+
+
     document.querySelector(".home").addEventListener("click", gotoHomePage);
 
-    try {
-        const favorites = document.querySelectorAll(".add-favorite");
-        favorites.forEach((favorite) => {
+    const favorite = document.querySelectorAll(".add-favorite");
+    if (favorite.length !== 0) {
+        favorite.forEach((favorite) => {
             favorite.addEventListener("click", removeFavorite)
             const icon = favorite.querySelector("i");
             icon.classList.add("fa-solid");
         })
-    } catch {
-        
+    } else {
+        enableSearch();
     }
 })
 
@@ -88,19 +91,40 @@ const createSearch = (container) => {
     container.classList.add("no-favorites")
     main.classList.add("empty-favorites")
 
-    document.querySelector(".search").addEventListener('click', goToSearchPage);
-    document.querySelector(".search-input").addEventListener("keypress", handleKeyPress);
+    enableSearch();
+}
+
+const enableSearch = () => {
+    if (localStorage.getItem('history') !== null) {
+        searchArr = JSON.parse(localStorage.getItem('history'));
+    }
+
+    const input = document.querySelector(".search-input");
+    input.addEventListener("keypress", handleKeyPress);
+    input.addEventListener("click", () => {
+        viewSearchHistory(searchArr, goToSearchPage)
+    });
+    document.querySelector(".search").addEventListener('click', () => {
+        goToSearchPage(input.value.trim());
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-input')) {
+            closeHistory();
+        }
+    });
 }
 
 // handle Enter key press for search
 const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-        goToSearchPage();
+        let query = document.querySelector(".search-input").value.trim();
+        goToSearchPage(query);
     }
 }
 
-const goToSearchPage = () => {
-    const input = document.querySelector(".search-input");
-    sessionStorage.setItem("query", input.value.trim());
+const goToSearchPage = (query = "") => {
+    sessionStorage.setItem("query", query);
+    addToSearchHistory(query, searchArr);
     window.location.href = "search.html";
 }

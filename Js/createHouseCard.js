@@ -1,11 +1,14 @@
 
 export const createCard = (house) => {
-    let container = document.querySelector(".cards-container");
     const { description, location, list_price, primary_photo, property_id } = house;
     const { baths_full: baths, beds, sqft: size } = description;
     const { address: { city, state, street_name: street } } = location;
     const price = list_price.toLocaleString();
     const image = primary_photo["href"];
+
+    const container = document.querySelector(".cards-container");
+  
+
     let card = document.createElement("div");
     card.classList.add("card");
     card.classList.add("swiper-slide");
@@ -58,3 +61,4 @@ const addToFavorites = (id) => {
 //     }
 
 // }
+

@@ -6,35 +6,37 @@
     border: none;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Akshar' ;
+    font-family: 'Akshar';
 }
 
-body{
+body {
     height: 100vh;
     display: flex;
     flex-direction: column;
 
 }
-header  {
+
+header {
     position: fixed;
     padding: 0% 1%;
     display: flex;
     align-items: center;
     height: 80px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;    width: 100vw;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    width: 100vw;
     background-color: white;
     gap: 10px;
     z-index: 1;
     justify-content: center;
 }
 
-header h1{
+header h1 {
     color: #9C1818;
     margin-right: 10px;
     cursor: pointer;
 }
 
-header button{
+header button {
     padding: 6px 30px;
     font-size: 1.5rem;
     border: 1px solid black;
@@ -45,12 +47,58 @@ header button{
 
 
 
-main{
+main {
     margin-top: 150px;
 
 }
 
-.cards-container{
+.search-container{
+    position: relative;
+}
+
+.search-container input:focus{
+    border-radius: 10px 10px 0 0 ;
+}
+
+.search-container button {
+    position: absolute;
+    padding: 10px;
+    font-size: 1.1rem;
+    background-color: white;
+    top: 5%;
+    right: 1%;
+    color: #036DCE;
+    border: none;
+}
+
+
+.history {
+    position: absolute;
+    top: 100;
+    padding: 8px;
+    border: 1px solid blue;
+    background-color: #ffffff;
+    width: 100%;
+    border-radius: 0 0 10px 10px;
+}
+
+
+.history p:hover {
+    color: rgb(250, 250, 250);
+    background-color: #036DCE;
+    border-radius: 10px;
+}
+
+.history:last-child {
+    margin-bottom: 0px;
+}
+
+.history p .fa-solid {
+    margin-right: 10px;
+}
+
+
+.cards-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -58,15 +106,15 @@ main{
     justify-content: center;
 }
 
-.empty{
+.empty {
     align-self: center;
     font-size: 2rem;
 }
 
-.card{
+.card {
     border-radius: 10px;
     overflow: hidden;
-    width: 28vw; 
+    width: 28vw;
     height: 40vh;
     border: 1px solid black;
     cursor: pointer;
@@ -74,16 +122,17 @@ main{
     position: relative;
 }
 
-.card:hover{
+.card:hover {
     box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
 }
-.card-img{
+
+.card-img {
     width: 100%;
     height: 60%;
     object-fit: cover;
 }
 
-.add-favorite{
+.add-favorite {
     position: absolute;
     top: 6px;
     right: 8px;
@@ -100,15 +149,17 @@ main{
 .card .info {
     padding: 8px 5px;
 }
+
 .card .price {
     font-size: 2rem;
     margin-bottom: 10px;
 }
 
-.search-container{
+.search-container {
     position: relative;
 }
-.search-container button{
+
+.search-container button {
     position: absolute;
     padding: 10px;
     font-size: 1.6rem;
@@ -119,22 +170,23 @@ main{
     border: none;
     cursor: pointer;
 }
-.search-container input{
+
+.search-container input {
     padding: 20px 20px;
     width: 50vw;
     font-size: 1.2rem;
     border-radius: 10px;
 }
 
-.empty-favorites{
+.empty-favorites {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.no-favorites{
+.no-favorites {
     align-self: center;
-    padding: 100px ;
+    padding: 100px;
     background-color: rgb(215, 211, 203);
     box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
 
@@ -155,16 +207,17 @@ main{
     z-index: 1;
     bottom: 1%;
     right: 1%;
-    transition: opacity 0.3s ease-in-out; /* Adjust the duration and easing as needed */
+    transition: opacity 0.3s ease-in-out;
+    /* Adjust the duration and easing as needed */
     opacity: 1;
 }
 
-.removed button{
+.removed button {
     background-color: transparent;
     color: white;
 }
 
-.relative-body{
+.relative-body {
     position: relative;
 }
 
@@ -172,6 +225,16 @@ main{
     opacity: 0;
 }
 
-.add-favorites .fa-solid{
+.add-favorites .fa-solid {
     color: #9C1818;
+}
+
+.history p {
+    color: #000000;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    text-align: start;
+
 }
