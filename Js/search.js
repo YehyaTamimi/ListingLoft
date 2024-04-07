@@ -16,11 +16,10 @@ let query;
 let searchArr = [];
 let favorites = [];
 document.addEventListener('DOMContentLoaded', () => {
-    if(localStorage.getItem("favorite") !== null){
+    if (localStorage.getItem("favorite") !== null) {
         favorites = JSON.parse(localStorage.getItem("favorite"));
-        console.log(favorites)
     }
-  
+
     if (sessionStorage.getItem("query") !== null) {
         query = sessionStorage.getItem("query");
         loadcontent(query);
@@ -56,9 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector(`.${filter}-button`).addEventListener("click", () => {
             viewFilter(filter);
         });
-        if(filter !== "rooms"){
+        if (filter !== "rooms") {
             filterRangeContent(filter, true);
-        }else{
+        } else {
             filterRoomContent(true);
         }
     });
@@ -78,7 +77,6 @@ const loadcontent = (query = "") => {
 
         if (query !== "") {
             query = query.toLowerCase();
-            console.log(query);
             //check if query only contains numbers
             let isnum = /^\d+$/.test(query);
             if (isnum === false) {
@@ -100,10 +98,11 @@ const loadcontent = (query = "") => {
         createCard(house);
     });
 
-    if (container.childNodes.length === 0) {
-        container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
-    }
+    // if (container.childNodes.length === 0) {
+    //     container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
+    // }
 
+    checkEmptyCardsContainer();
 
     checkFavorites();
 
@@ -179,15 +178,12 @@ const filterRangeContent = (type, isHistory) => {
     let max;
     if (isHistory) {
         [min, max] = loadFilter(type);
-        console.log(min);
-        console.log(max);
         if (min === "null" && max === "null") {
             return;
         }
     } else {
         min = document.querySelector(`.min-${type}-input`).value.trim();
         max = document.querySelector(`.max-${type}-input`).value.trim();
-        console.log(document.querySelector(`.min-${type}-input`));
     }
 
     let container = document.querySelector(".cards-container");
@@ -211,10 +207,10 @@ const filterRangeContent = (type, isHistory) => {
     });
 
 
-    if (container.childNodes.length === 0) {
-        container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
-        return;
-    }
+    // if (container.childNodes.length === 0) {
+    //     container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
+    //     return;
+    // }
     saveFilter(type, min, max);
     document.querySelector(`.${type}-button`).classList.add("selected-filter");
     checkEmptyCardsContainer();
@@ -266,8 +262,9 @@ const createRoomsElement = () => {
         });
     })
 
-    container.querySelector(".apply").addEventListener('click', ()=> {
-        filterRoomContent(false)});
+    container.querySelector(".apply").addEventListener('click', () => {
+        filterRoomContent(false)
+    });
     container.querySelector(".reset2").addEventListener("click", () => {
         resetContent("rooms");
     })
@@ -284,29 +281,27 @@ const filterRoomContent = (isHistory) => {
 
     if (isHistory) {
         [beds, baths] = loadFilter("rooms");
-        console.log(beds);
-        console.log(baths);
         beds = (beds === "null") ? "0" : beds;
         baths = (baths === "null") ? "0" : baths;
     } else {
         const roomTypes = [".bedrooms-number", ".bathrooms-number"];
 
-    roomTypes.forEach((type) => {
-        let typeButtons = document.querySelectorAll(`${type} button`);
-        typeButtons.forEach((button) => {
-            if (button.classList.contains('active')) {
-                if (type === ".bedrooms-number") {
-                    beds = button.textContent[0];
-                    beds = (beds === "A") ? "0" : beds;
-                } else {
-                    baths = button.textContent[0];
-                    baths = (baths === "A") ? "0" : baths;
+        roomTypes.forEach((type) => {
+            let typeButtons = document.querySelectorAll(`${type} button`);
+            typeButtons.forEach((button) => {
+                if (button.classList.contains('active')) {
+                    if (type === ".bedrooms-number") {
+                        beds = button.textContent[0];
+                        beds = (beds === "A") ? "0" : beds;
+                    } else {
+                        baths = button.textContent[0];
+                        baths = (baths === "A") ? "0" : baths;
+                    }
                 }
-            }
+            })
         })
-    })
 
-   }
+    }
 
 
 
@@ -314,20 +309,16 @@ const filterRoomContent = (isHistory) => {
         let bednum = card.querySelector(".small-info").textContent.split("|")[0].split(" ")[0];
         let bathnum = card.querySelector(".small-info").textContent.split("|")[1].split(" ")[1];
 
-        if (( parseInt(beds) === 0  || parseInt(bednum) === parseInt(beds)) && (parseInt(baths) === 0 || parseInt(bathnum) === parseInt(baths))) {
+        if ((parseInt(beds) === 0 || parseInt(bednum) === parseInt(beds)) && (parseInt(baths) === 0 || parseInt(bathnum) === parseInt(baths))) {
             card.classList.remove("rooms-filter-applied");
         } else {
             card.classList.add("rooms-filter-applied");
         }
     })
 
-    if (container.childNodes.length === 0) {
-        container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
-        return;
-    }
     saveFilter("rooms", beds, baths);
-    if(beds !== "0" && baths !== "0"){
-    document.querySelector(`.rooms-button`).classList.add("selected-filter");
+    if (beds !== "0" && baths !== "0") {
+        document.querySelector(`.rooms-button`).classList.add("selected-filter");
     }
 
     checkEmptyCardsContainer();
@@ -375,18 +366,18 @@ const goToSearchPage = (query = "") => {
 const resetContent = (element) => {
     const filters = ["price", "size", "rooms"];
     document.querySelector(".cards-container").innerHTML = "";
-    if(element !== "rooms"){
+    if (element !== "rooms") {
         document.querySelector(`.min-${element}-input`).value = "";
         document.querySelector(`.max-${element}-input`).value = "";
     }
     //reload content from start
-    loadcontent();
+    loadcontent(query);
     saveFilter(element, null, null);
     filters.forEach((filter) => {
         //keep any other filters that are applied
-        if(filter !== "rooms"){
+        if (filter !== "rooms") {
             filterRangeContent(filter, true);
-        }else{
+        } else {
             filterRoomContent(true);
         }
     });
@@ -394,7 +385,7 @@ const resetContent = (element) => {
     viewFilter(element);
 }
 
-const showSavedInput = (element)=>{
+const showSavedInput = (element) => {
     let min, max;
     [min, max] = loadFilter(element);
     if (min === "null" && max === "null") {
@@ -404,27 +395,26 @@ const showSavedInput = (element)=>{
     document.querySelector(`.max-${element}-input`).value = max;
 }
 
-const showSavedButton = (type, button)=>{
-        let beds, baths;
-        [beds, baths] = loadFilter("rooms")
-        if(type === ".bedrooms-number"){
-            if((button.textContent[0] === "A" && beds === "0") || (button.textContent[0] === beds)){
-                button.classList.add("active");
-            }
-
-        }else{
-            if((button.textContent[0] === "A" && baths === "0") || (button.textContent[0] === baths)){
-                button.classList.add("active");
-            }
+const showSavedButton = (type, button) => {
+    let beds, baths;
+    [beds, baths] = loadFilter("rooms")
+    if (type === ".bedrooms-number") {
+        if ((button.textContent[0] === "A" && beds === "0") || (button.textContent[0] === beds)) {
+            button.classList.add("active");
         }
+
+    } else {
+        if ((button.textContent[0] === "A" && baths === "0") || (button.textContent[0] === baths)) {
+            button.classList.add("active");
+        }
+    }
 }
 
 
-const checkFavorites = ()=>{
+const checkFavorites = () => {
     favorites.forEach((card) => {
         const element = document.querySelector(`.${card}`)
         const icon = element.querySelector(".add-favorite i");
-        console.log(icon)
         icon.classList.add("fa-solid");
     })
 }
@@ -435,12 +425,12 @@ const checkEmptyCardsContainer = () => {
 
     const container = document.querySelector(".cards-container");
 
-    const cards = container.querySelectorAll(".card");
-
-    if (container.lastElementChild.tagName === "P") {
-        container.removeChild(container.lastElementChild);
-
+    const existingP = container.querySelector(".empty");
+    if (existingP) {
+        container.removeChild(existingP);
     }
+
+    const cards = container.querySelectorAll(".card");
 
     for (let i = 0; i < cards.length; i++) {
         let style = window.getComputedStyle(cards[i]);
@@ -448,6 +438,7 @@ const checkEmptyCardsContainer = () => {
             return;
         }
     }
+
     const p = document.createElement("p");
     p.classList.add("empty");
     p.innerHTML = "No Matching Results Were Found";
