@@ -21,10 +21,19 @@ header  {
     display: flex;
     align-items: center;
     height: 80px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;    width: 100vw;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;    
+    width: 100vw;
     background-color: white;
     gap: 10px;
     z-index: 1;
+    /* flex-direction: column; */
+}
+
+header .whole-container{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
 }
 
 header h1{
@@ -235,6 +244,12 @@ main{
     border-radius: 0;
 }
 
+.filter-range .bedrooms-number button, .filter-range .bathrooms-number button{
+    padding: 10px 7%;
+    border: 1px solid black;
+    background-color: transparent;
+}
+
 .bedrooms-number button:hover, .bathrooms-number button:hover{
     border: 1px solid #036DCE;
     background-color: #036cce56;
@@ -308,8 +323,8 @@ main{
 }
 
 .active{
-    border: 1px solid #036DCE;
-    background-color: #036cce41;
+    border: 1px solid #036DCE !important;
+    background-color: #036cce41 !important;
 }
 
 .add-favorites .fa-solid{
@@ -322,6 +337,73 @@ main{
 
 .empty{
     font-size: 2rem;
+}
+
+.filter-container{
+    position: relative;
+}
+
+.filter-range{
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    gap: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    pointer-events: visiblePainted;
+    overflow: scroll;
+}
+
+.close{
+    text-align: end;
+    border-bottom: 1px solid black;
+}
+
+.closeButton{
+    font-size: 1.2rem;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.filter-range input{
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+
+.filter-range .apply{
+    padding: 10px ;
+    font-size: 1.3rem;
+    border-radius: 10px;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.test{
+    display: flex;
+    gap: 10px;
+}
+
+.price-range .dash{
+    align-self: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.price-range input{
+    width: 100px;
+}
+
+.disabled{
+    overflow: hidden;
 }
 
 
@@ -383,7 +465,7 @@ main{
         padding: 6px 25px;
     }
 
-    .price-range, .size-range, .rooms-type{
+    .price-range, .size-range, .rooms-type, .filter-range{
         right: 0;
     }
 
@@ -411,6 +493,19 @@ main{
 
 @media screen and (max-width:  685px){
 
+    .price-button, .rooms-button, .size-button, .filter-button{
+        font-size: 1rem;
+        padding: 6px 20px;
+    }
+
+}
+
+@media screen and (max-width:  640px){
+
+    header h1{
+        font-size: 1.3rem;
+    }
+
     .price-button, .rooms-button, .size-button{
         font-size: 1rem;
         padding: 6px 20px;
@@ -423,10 +518,57 @@ main{
         width: 400px;
         height: 350px;
     }
+    .filter-button{
+        font-size: 1.2rem;
+        padding: 5px 20px;
+    }
+
+    header{
+        flex-direction: column;
+        box-shadow: none; 
+        position: relative;
+        z-index: 0;
+    }
+
+    header h1{
+        margin-top: 20px;
+        font-size: 1.8rem;
+    }
+
+    header .search-input{
+        width: 60vw;
+    }
+
+    .test{
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        justify-content: center;
+    }
+    
+   .dash{
+        align-self: center;
+        font-size: 1.5rem;
+    }
+
+    /* .filter-range{
+        left: 0;
+        top: 150%;
+        width: 100vw;
+        height: 100vh;
+    } */
+
+    .bedrooms-number, .bathrooms-number{
+        justify-content: center;
+    }
+    
+    .bedrooms-number button, .bathrooms-number button{
+        /* padding: 10px 10%; */
+    }
 
 }
 
-@media screen and (max-width:  620px){
+@media screen and (max-width:  420px){
     .card{
         width: 350px;
         height: 300px;
