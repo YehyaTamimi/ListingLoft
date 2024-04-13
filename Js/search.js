@@ -50,6 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
             closeHistory();
         }
     });
+
+    changeFilter();
+    window.addEventListener("resize", changeFilter);
+
     const filters = ["price", "size", "rooms"];
     filters.forEach((filter) => {
         document.querySelector(`.${filter}-button`).addEventListener("click", () => {
@@ -184,6 +188,10 @@ const filterRangeContent = (type, isHistory) => {
     } else {
         min = document.querySelector(`.min-${type}-input`).value.trim();
         max = document.querySelector(`.max-${type}-input`).value.trim();
+
+        if (min === "" && max === "") {
+            return;
+        }
     }
 
     let container = document.querySelector(".cards-container");
@@ -213,6 +221,10 @@ const filterRangeContent = (type, isHistory) => {
     // }
     saveFilter(type, min, max);
     document.querySelector(`.${type}-button`).classList.add("selected-filter");
+    const oneFilter = document.querySelector(`.filter-button`);
+        if (oneFilter) {
+            oneFilter.classList.add("selected-filter");
+        }
     checkEmptyCardsContainer();
 }
 
@@ -243,24 +255,7 @@ const createRoomsElement = () => {
 
     container.appendChild(type);
 
-    const roomTypes = [".bedrooms-number", ".bathrooms-number"];
-
-    //small scale callback-hell ;)
-    roomTypes.forEach((type) => {
-        let rooms = document.querySelector(type);
-        let roombuttons = rooms.querySelectorAll("button");
-        roombuttons.forEach((button) => {
-            button.addEventListener('click', () => {
-
-                roombuttons.forEach((btn) => {
-                    btn.classList.remove('active');
-                });
-                button.classList.add('active');
-            });
-
-            showSavedButton(type, button);
-        });
-    })
+    changeRoomButtonColor();
 
     container.querySelector(".apply").addEventListener('click', () => {
         filterRoomContent(false)
@@ -319,6 +314,10 @@ const filterRoomContent = (isHistory) => {
     saveFilter("rooms", beds, baths);
     if (beds !== "0" && baths !== "0") {
         document.querySelector(`.rooms-button`).classList.add("selected-filter");
+        const oneFilter = document.querySelector(`.filter-button`);
+        if (oneFilter) {
+            oneFilter.classList.add("selected-filter");
+        }
     }
 
     checkEmptyCardsContainer();
@@ -382,7 +381,9 @@ const resetContent = (element) => {
         }
     });
     document.querySelector(`.${element}-button`).classList.remove("selected-filter");
+    if(!document.querySelector(".filter-range")){
     viewFilter(element);
+    }
 }
 
 const showSavedInput = (element) => {
@@ -443,4 +444,165 @@ const checkEmptyCardsContainer = () => {
     p.classList.add("empty");
     p.innerHTML = "No Matching Results Were Found";
     container.appendChild(p);
+}
+
+
+const changeFilter = () => {
+    const width = window.innerWidth;
+    const filters = ["price", "size", "rooms"];
+    const header = document.querySelector(".whole-container");
+    const filter = document.querySelector(".filter-container")
+
+    if (width < 620) {
+        filters.forEach((filter) => {
+            const button = document.querySelector(`.${filter}-container`)
+            button.style.display = "none";
+        });
+        createOneFilterButton();
+    } else {
+        const oneFilter = document.querySelector(".filter-range");
+        hideFilter(oneFilter);
+        filters.forEach((filter) => {
+            const button = document.querySelector(`.${filter}-container`)
+            button.style.display = "block";
+        });
+        if (filter) {
+            header.removeChild(filter);
+        }
+    }
+}
+
+const createOneFilterButton = () => {
+    if (!document.querySelector(".filter-container")) {
+        const container = document.querySelector(".whole-container");
+        const body = document.querySelector("body");
+        const filter = document.createElement("div");
+        filter.classList.add("filter-container");
+        const button = document.createElement("button");
+        button.textContent = "Filter";
+        button.classList.add("filter-button")
+        filter.appendChild(button);
+        container.appendChild(filter);
+        button.addEventListener("click", () => { createFilterBody(body) })
+    }
+}
+
+const createFilterBody = (body) => {
+    const range = document.createElement("div");
+    range.classList.add("filter-range");
+    range.innerHTML = `
+    <div class="close"><button class="closeButton"><i class="fa-solid fa-x"></i></button></div>
+    <div>Price</div>
+    <div class="test">
+        <div class="min-price">
+            <input type="text" placeholder="Min" class=min-price-input>
+            <p>$</p>
+        </div>
+        <div class="dash">-</div>
+        <div class="max-price">
+            <input type="text" placeholder="Max" class=max-price-input>
+            <p>$</p>
+        </div>
+    </div>
+    <div>Bedrooms</div>
+        <div class="bedrooms-number">
+            <button>Any</button>
+            <button>1+</button>
+            <button>2+</button>
+            <button>3+</button>
+            <button>4+</button>
+        </div>
+        <div>Bathrooms</div>
+        <div class="bathrooms-number">
+            <button>Any</button>
+            <button>1+</button>
+            <button>2+</button>
+            <button>3+</button>
+            <button>4+</button>
+        </div>
+        <div>Size</div>
+        <div class="test">
+        <div class="min-size">
+            <input type="text" placeholder="Min" class=min-size-input>
+            <p>M</p>
+        </div>
+        <div class="dash">-</div>
+        <div class="max-size">
+            <input type="text" placeholder="Max" class=max-size-input>
+            <p>M</p>
+        </div>
+    </div>
+    <p class=reset2> Reset Changes </p>
+        <button class="apply">Apply</button>
+    `
+    range.querySelector(".closeButton").addEventListener("click", () => {
+        hideFilter(range);
+    })
+
+    showFilter(range);
+    changeRoomButtonColor();
+    showSavedInput("price");
+    showSavedInput("size");
+
+    range.querySelector(".apply").addEventListener("click", () => {
+        checkSelectedFilter(range, body);
+    })
+
+    range.querySelector(".reset2").addEventListener("click", () => {
+        resetAll(range);
+    })
+
+}
+
+
+const checkSelectedFilter = (filter) => {
+    filterRoomContent(false);
+    filterRangeContent("price", false);
+    filterRangeContent("size", false);
+    hideFilter(filter)
+}
+
+
+const changeRoomButtonColor = () => {
+    const roomTypes = [".bedrooms-number", ".bathrooms-number"];
+
+    //small scale callback-hell ;)
+    roomTypes.forEach((type) => {
+        let rooms = document.querySelector(type);
+        let roombuttons = rooms.querySelectorAll("button");
+        roombuttons.forEach((button) => {
+            button.addEventListener('click', () => {
+
+                roombuttons.forEach((btn) => {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+            });
+
+            showSavedButton(type, button);
+        });
+    })
+}
+
+const resetAll = (filter) => {
+    const filters = ["price", "size", "rooms"];
+    filters.forEach((filter) => {
+        resetContent(filter);
+    })
+    document.querySelector(`.filter-container`).classList.remove("selected-filter");
+    hideFilter(filter);
+}
+
+const showFilter = (filter) => {
+    const body = document.querySelector("body")
+    body.appendChild(filter);
+    body.classList.add("disabled");
+}
+
+const hideFilter = (filter) => {
+    const body = document.querySelector("body")
+    if (filter) {
+        body.removeChild(filter);
+        body.classList.remove("disabled");
+    }
 }
