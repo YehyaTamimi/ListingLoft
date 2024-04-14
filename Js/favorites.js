@@ -82,9 +82,8 @@ const checkEmpty = () => {
 
 const createSearch = (container) => {
     const main = document.querySelector("main");
-    container.innerHTML = ` 
+    container.innerHTML = ` <p> Add Houses to Your  Favorites <i class="fa-regular fa-heart"></i> list</p>
                                 <div class="search-container">
-                                    <p> Add Houses to Your  Favorites <i class="fa-regular fa-heart"></i> list</p>
                                     <input type="text" name="" id="" placeholder="Enter a Location, Price, Size" class="search-input">
                                     <button class="search"><i class="fa-solid fa-magnifying-glass"></i></button>
                                 </div>`;
