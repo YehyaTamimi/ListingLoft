@@ -22,7 +22,10 @@ export const createCard = (house) => {
         state1 = state;
     }
 
-    if (!photos || !photos[0].href) {
+    const price = list_price.toLocaleString();
+    
+    const image = photos && photos[0]?.href ; 
+    if (!photos || !image) {
         return;
     }
 
@@ -34,8 +37,6 @@ export const createCard = (house) => {
         return;
     }
 
-    const price = list_price.toLocaleString();
-    const image = photos[0].href;
 
 
 
