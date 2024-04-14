@@ -323,3 +323,19 @@ main{
 .empty{
     font-size: 2rem;
 }
+
+.grayout{
+}
+
+.loading{
+    align-self: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading img{
+    object-fit: contain;
+    width: 70%;
+    height: 70%;
+}
