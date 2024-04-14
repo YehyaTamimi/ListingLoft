@@ -415,8 +415,10 @@ const showSavedButton = (type, button) => {
 const checkFavorites = () => {
     favorites.forEach((card) => {
         const element = document.querySelector(`.${card}`)
+        if(element){
         const icon = element.querySelector(".add-favorite i");
         icon.classList.add("fa-solid");
+        }
     })
 }
 
