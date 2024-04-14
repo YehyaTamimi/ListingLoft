@@ -158,18 +158,21 @@ const filterRangeContent = (type, isHistory) => {
         max = document.querySelector(`.max-${type}-input`).value.trim();
     }
 
-    if (type === "price") {
-        filter.price_min = min;
-        filter.price_max = max;
-    } else {
-        filter.size_min = min;
-        filter.size_max = max;
+    if ((/^\d+$/.test(min) && /^\d+$/.test(max)) && (parseInt(min) < parseInt(max)) ) {
+
+        if (type === "price") {
+            filter.price_min = min;
+            filter.price_max = max;
+        } else {
+            filter.home_size_min = min;
+            filter.home_size_max = max;
+        }
+        saveFilter(type, min, max);
+        document.querySelector(`.${type}-button`).classList.add("selected-filter");
     }
 
     removeCards();
     requestListings(query, filter, loadcontent)
-    saveFilter(type, min, max);
-    document.querySelector(`.${type}-button`).classList.add("selected-filter");
     localStorage.setItem("historyFilters", JSON.stringify(filter));
 }
 
@@ -254,13 +257,13 @@ const filterRoomContent = (isHistory) => {
                     if (type === ".bedrooms-number") {
                         beds = button.textContent[0];
                         beds = (beds === "A") ? "0" : beds;
-                        filter.beds_min = beds;
-                        filter.beds_max = beds;
+                        filter.beds_min = parseInt(beds);
+                        filter.beds_max = parseInt(beds);
                     } else {
                         baths = button.textContent[0];
                         baths = (baths === "A") ? "0" : baths;
-                        filter.baths_min = baths;
-                        filter.baths_max = baths;
+                        filter.baths_min = parseInt(baths);
+                        filter.baths_max = parseInt(baths);
                     }
                 }
             })
@@ -343,8 +346,8 @@ const resetContent = (element) => {
         delete filter.price_min;
         delete filter.price_max;
     } else if (element === "size") {
-        delete filter.size_min;
-        delete filter.size_max;
+        delete filter.home_size_min;
+        delete filter.home_size_max;
     } else {
         delete filter.baths_min;
         delete filter.baths_max;
