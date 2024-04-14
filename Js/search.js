@@ -22,15 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (sessionStorage.getItem("query") !== null) {
         query = sessionStorage.getItem("query");
-        loadcontent(query);
+        requestListings(query, "", loadcontent)
     } else {
-        loadcontent();
+        requestListings("", "", loadcontent)
     }
 
     if (localStorage.getItem('history') !== null) {
         searchArr = JSON.parse(localStorage.getItem('history'));
     }
-
 
     document.querySelector(".home").addEventListener("click", gotoHomePage);
 
@@ -55,53 +54,75 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector(`.${filter}-button`).addEventListener("click", () => {
             viewFilter(filter);
         });
-        if (filter !== "rooms") {
-            filterRangeContent(filter, true);
-        } else {
-            filterRoomContent(true);
-        }
+        // if (filter !== "rooms") {
+        //     filterRangeContent(filter, true);
+        // } else {
+        //     filterRoomContent(true);
+        // }
     });
 })
 
 
-//load content from json file
-const loadcontent = (query = "") => {
-    let houses = json["listings"];
-    const container = document.querySelector(".cards-container");
+// //load content from json file
+// const loadcontent = (query = "") => {
+//     let houses = json["listings"];
+//     const container = document.querySelector(".cards-container");
 
+//     houses.forEach((house) => {
+//         const { description, location, list_price } = house;
+//         const { address: { city, state, street_name } } = location;
+//         const size = description["sqft"];
+//         const price = list_price;
+
+//         if (query !== "") {
+//             query = query.toLowerCase();
+//             //check if query only contains numbers
+//             let isnum = /^\d+$/.test(query);
+//             if (isnum === false) {
+//                 if (!(state.toLowerCase().includes(query) || city.toLowerCase().includes(query) || street_name.toLowerCase().includes(query))) {
+//                     return;
+//                 }
+//             } else {
+//                 if (query.length >= 5) {
+//                     if (parseFloat(price) > parseFloat(query)) {
+//                         return;
+//                     }
+//                 } else {
+//                     if (parseFloat(size) > parseFloat(query)) {
+//                         return;
+//                     }
+//                 }
+//             }
+//         }
+//         createCard(house);
+//     });
+
+//     // if (container.childNodes.length === 0) {
+//     //     container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
+//     // }
+
+//     checkEmptyCardsContainer();
+
+//     checkFavorites();
+
+// }
+
+//load content from json file
+const loadcontent = (Json) => {
+    console.log(Json["listings"])
+    let houses = Json["listings"];
+    const container = document.querySelector(".cards-container");
     houses.forEach((house) => {
         const { description, location, list_price } = house;
         const { address: { city, state, street_name } } = location;
         const size = description["sqft"];
         const price = list_price;
-
-        if (query !== "") {
-            query = query.toLowerCase();
-            //check if query only contains numbers
-            let isnum = /^\d+$/.test(query);
-            if (isnum === false) {
-                if (!(state.toLowerCase().includes(query) || city.toLowerCase().includes(query) || street_name.toLowerCase().includes(query))) {
-                    return;
-                }
-            } else {
-                if (query.length >= 5) {
-                    if (parseFloat(price) > parseFloat(query)) {
-                        return;
-                    }
-                } else {
-                    if (parseFloat(size) > parseFloat(query)) {
-                        return;
-                    }
-                }
-            }
-        }
         createCard(house);
     });
 
     // if (container.childNodes.length === 0) {
     //     container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
     // }
-
     checkEmptyCardsContainer();
 
     checkFavorites();
@@ -305,16 +326,24 @@ const filterRoomContent = (isHistory) => {
 
 
 
-    cards.forEach((card) => {
-        let bednum = card.querySelector(".small-info").textContent.split("|")[0].split(" ")[0];
-        let bathnum = card.querySelector(".small-info").textContent.split("|")[1].split(" ")[1];
+    // cards.forEach((card) => {
+    //     let bednum = card.querySelector(".small-info").textContent.split("|")[0].split(" ")[0];
+    //     let bathnum = card.querySelector(".small-info").textContent.split("|")[1].split(" ")[1];
 
-        if ((parseInt(beds) === 0 || parseInt(bednum) === parseInt(beds)) && (parseInt(baths) === 0 || parseInt(bathnum) === parseInt(baths))) {
-            card.classList.remove("rooms-filter-applied");
-        } else {
-            card.classList.add("rooms-filter-applied");
-        }
-    })
+    //     if ((parseInt(beds) === 0 || parseInt(bednum) === parseInt(beds)) && (parseInt(baths) === 0 || parseInt(bathnum) === parseInt(baths))) {
+    //         card.classList.remove("rooms-filter-applied");
+    //     } else {
+    //         card.classList.add("rooms-filter-applied");
+    //     }
+    // })
+
+    const query = {
+        baths_min : baths,
+        baths_max : baths,
+        beds_min : beds,
+        beds_max: beds
+    }
+    requestListings(query, "rooms", loadcontent);
 
     saveFilter("rooms", beds, baths);
     if (beds !== "0" && baths !== "0") {
@@ -414,8 +443,10 @@ const showSavedButton = (type, button) => {
 const checkFavorites = () => {
     favorites.forEach((card) => {
         const element = document.querySelector(`.${card}`)
-        const icon = element.querySelector(".add-favorite i");
-        icon.classList.add("fa-solid");
+        if(element){
+            const icon = element.querySelector(".add-favorite i");
+            icon.classList.add("fa-solid");
+        }
     })
 }
 
