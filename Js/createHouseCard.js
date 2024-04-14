@@ -1,17 +1,50 @@
 
 export const createCard = (house) => {
-    const { description, location, list_price, primary_photo, property_id } = house;
-    const { baths_full: baths, beds, sqft: size } = description;
-    const { address: { city, state, street_name: street } } = location;
-    const price = list_price.toLocaleString();
-    const image = primary_photo["href"];
+    let def = "N/A";
+    let street1, size1, baths1, beds1, city1, state1;
+    const { description, location, list_price, photos, property_id } = house;
+    if (window.location.pathname.includes("favorites.html")) {
+        const { baths, beds, sqft } = description;
+        const { address: { city, state, street_name } } = location;
+        size1 = sqft;
+        street1 = street_name;
+        baths1 = baths;
+        beds1 = beds;
+        city1 = city;
+        state1 = state;
+    } else {
+        const { baths_full: baths, beds, sqft: size } = description;
+        const { address: { city, state, street_name: street } } = location;
+        size1 = size;
+        street1 = street;
+        baths1 = baths;
+        beds1 = beds;
+        city1 = city;
+        state1 = state;
+    }
+
+    const image = photos && photos[0]?.href;
+    if (!photos || !image || !property_id || !description) {
+        return;
+    }
+
+    baths1 = baths1 || def;
+    beds1 = beds1 || def;
+    size1 = size1 || def;
+    city1 = city1 || def;
+    state1 = state1 || def;
+    street1 = street1 || def;
+    const price = list_price.toLocaleString() || def;
+
+
+
 
     const container = document.querySelector(".cards-container");
-  
+
 
     let card = document.createElement("div");
     card.classList.add("card");
-    if(window.location.pathname.includes("index.html")){
+    if (window.location.pathname.includes("index.html")) {
         card.classList.add("swiper-slide");
     }
     card.classList.add(`h${property_id}`);
@@ -19,42 +52,46 @@ export const createCard = (house) => {
                           <button class="add-favorite"><i class="fa-regular fa-heart"></i></button>
                           <div class="info">
                                 <p class="price">$${price}</p>
-                                <p class="small-info">${beds} bed | ${baths} bath | ${size} sqrt | ${street}, ${city}, ${state}</p>
+                                <p class="small-info">${beds1} bed | ${baths1} bath | ${size1} sqrt | ${street1}, ${city1}, ${state1}</p>
                           </div>`
 
     const button = card.querySelector(".add-favorite");
-    button.addEventListener("click", (e)=>{
+
+    button.addEventListener("click", (e) => {
         e.stopPropagation();
         const icon = button.querySelector("i");
-        if(icon.classList[2] == "fa-solid"){
+        if (icon.classList[2] == "fa-solid") {
             icon.classList.remove("fa-solid");
-        }else{
+        } else {
             icon.classList.add("fa-solid");
         }
         addToFavorites(`h${property_id}`)
     })
 
-    card.addEventListener("click" ,()=>{
-        if(!window.location.pathname.includes("index.html")){
-        createPopup(house, button);}
+    card.addEventListener("click", () => {
+        if (!window.location.pathname.includes("index.html")) {
+            createPopup(house, button);
+        }
     });
 
     container.appendChild(card);
-  }
+}
 
 const addToFavorites = (id) => {
     let arr = [];
-    if(localStorage.getItem("favorite") !== null){
+    if (localStorage.getItem("favorite") !== null) {
         arr = JSON.parse(localStorage.getItem("favorite"));
-      }
-    if (arr.includes(id)){
+    }
+    if (arr.includes(id)) {
         let index = arr.indexOf(id);
         let removed = arr.splice(index, 1);
-    }else{
+
+    } else {
         arr.push(id);
     }
     localStorage.setItem("favorite", JSON.stringify(arr));
 }
+
 
 const createPopup = (house, fav) => {
     const body = document.querySelector("main");
@@ -93,7 +130,7 @@ const createPopup = (house, fav) => {
         <div class="popup-desc-big">description</div>
         <div class="popup-desc">${text}</div>
         <button class="agent">Call an Agent</button>`
-    
+
     body.appendChild(popup);
 
     photos.forEach((photo) => {
@@ -102,49 +139,49 @@ const createPopup = (house, fav) => {
 
     var swiper = new Swiper(".mySwiper", {
         navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
         },
-      });
+    });
 
-    document.querySelector(".close-popup").addEventListener("click", ()=>{
+    document.querySelector(".close-popup").addEventListener("click", () => {
         closePopup(body, popup, overlay);
     })
 
     const favorite = document.querySelector(".favorite-popup");
-    if(fav.querySelector("i").classList[2] == "fa-solid"){
+    if (fav.querySelector("i").classList[2] == "fa-solid") {
         const favIcon = favorite.querySelector("i");
         favIcon.classList.add("fa-solid");
     }
-    favorite.addEventListener("click", ()=>{
+    favorite.addEventListener("click", () => {
         changeHeart(favorite, fav, property_id);
     })
 }
 
-const createImage = (photo) =>{
+const createImage = (photo) => {
     const img = document.createElement("img");
     const swiperWrapper = document.querySelector(".swiper-wrapper");
-  
+
     img.src = photo["href"];
     img.classList.add("swiper-slide");
-  
+
     swiperWrapper.appendChild(img);
 }
 
 
-const closePopup = (body, popup, overlay)=>{
+const closePopup = (body, popup, overlay) => {
     body.removeChild(popup);
     body.removeChild(overlay);
     body.classList.remove("disabled");
 }
 
-const changeHeart = (favorite, fav, property_id)=>{
+const changeHeart = (favorite, fav, property_id) => {
     const favIcon = favorite.querySelector("i");
     const icon = fav.querySelector("i");
-    if(icon.classList[2] == "fa-solid" || favIcon.classList[2] == "fa-solid"){
+    if (icon.classList[2] == "fa-solid" || favIcon.classList[2] == "fa-solid") {
         icon.classList.remove("fa-solid");
         favIcon.classList.remove("fa-solid")
-    }else{
+    } else {
         icon.classList.add("fa-solid");
         favIcon.classList.add("fa-solid");
     }
