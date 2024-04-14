@@ -20,15 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
         favorites = JSON.parse(localStorage.getItem("favorite"));
     }
 
-    if (sessionStorage.getItem("query") !== null) {
-        query = sessionStorage.getItem("query");
-        requestListings(query, "", loadcontent)
-    } else {
-        requestListings("", "", loadcontent)
-    }
-
     if (localStorage.getItem('history') !== null) {
         searchArr = JSON.parse(localStorage.getItem('history'));
+    }
+
+    if (sessionStorage.getItem("query") !== null) {
+        query = sessionStorage.getItem("query");
+        searchWithHistory(query)
+    } else {
+        searchWithHistory();
     }
 
     document.querySelector(".home").addEventListener("click", gotoHomePage);
@@ -54,62 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector(`.${filter}-button`).addEventListener("click", () => {
             viewFilter(filter);
         });
-        // if (filter !== "rooms") {
-        //     filterRangeContent(filter, true);
-        // } else {
-        //     filterRoomContent(true);
-        // }
     });
 })
 
 
-// //load content from json file
-// const loadcontent = (query = "") => {
-//     let houses = json["listings"];
-//     const container = document.querySelector(".cards-container");
-
-//     houses.forEach((house) => {
-//         const { description, location, list_price } = house;
-//         const { address: { city, state, street_name } } = location;
-//         const size = description["sqft"];
-//         const price = list_price;
-
-//         if (query !== "") {
-//             query = query.toLowerCase();
-//             //check if query only contains numbers
-//             let isnum = /^\d+$/.test(query);
-//             if (isnum === false) {
-//                 if (!(state.toLowerCase().includes(query) || city.toLowerCase().includes(query) || street_name.toLowerCase().includes(query))) {
-//                     return;
-//                 }
-//             } else {
-//                 if (query.length >= 5) {
-//                     if (parseFloat(price) > parseFloat(query)) {
-//                         return;
-//                     }
-//                 } else {
-//                     if (parseFloat(size) > parseFloat(query)) {
-//                         return;
-//                     }
-//                 }
-//             }
-//         }
-//         createCard(house);
-//     });
-
-//     // if (container.childNodes.length === 0) {
-//     //     container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
-//     // }
-
-//     checkEmptyCardsContainer();
-
-//     checkFavorites();
-
-// }
-
 //load content from json file
 const loadcontent = (Json) => {
-    console.log(Json["listings"])
     let houses = Json["listings"];
     const container = document.querySelector(".cards-container");
     houses.forEach((house) => {
@@ -119,14 +69,9 @@ const loadcontent = (Json) => {
         const price = list_price;
         createCard(house);
     });
-
-    // if (container.childNodes.length === 0) {
-    //     container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
-    // }
     checkEmptyCardsContainer();
 
     checkFavorites();
-
 }
 
 //view filter element when a filter is pressed
@@ -197,6 +142,12 @@ const createPriceRangeElement = (element) => {
 const filterRangeContent = (type, isHistory) => {
     let min;
     let max;
+    let filter = {};
+
+    if (localStorage.getItem("historyFilters") !== null) {
+        filter = JSON.parse(localStorage.getItem("historyFilters"));
+    }
+
     if (isHistory) {
         [min, max] = loadFilter(type);
         if (min === "null" && max === "null") {
@@ -207,34 +158,19 @@ const filterRangeContent = (type, isHistory) => {
         max = document.querySelector(`.max-${type}-input`).value.trim();
     }
 
-    let container = document.querySelector(".cards-container");
-    let cards = container.querySelectorAll(".card");
+    if (type === "price") {
+        filter.price_min = min;
+        filter.price_max = max;
+    } else {
+        filter.size_min = min;
+        filter.size_max = max;
+    }
 
-    cards.forEach((card) => {
-        let value;
-        if (type === "price") {
-            value = card.querySelector(".price").textContent.replace(/\,/g, '').split('$')[1];
-        } else {
-            value = card.querySelector(".small-info").textContent.split("|")[2].split(" ")[1];
-        }
-
-        value = parseInt(value);
-        if (!(value >= parseInt(min) && value <= parseInt(max))) {
-            // container.removeChild(card);
-            card.classList.add(`${type}-filter-applied`)
-        } else {
-            card.classList.remove(`${type}-filter-applied`)
-        }
-    });
-
-
-    // if (container.childNodes.length === 0) {
-    //     container.innerHTML = "<p class=empty>No Matching Results Were Found<p>";
-    //     return;
-    // }
+    removeCards();
+    requestListings(query, filter, loadcontent)
     saveFilter(type, min, max);
     document.querySelector(`.${type}-button`).classList.add("selected-filter");
-    checkEmptyCardsContainer();
+    localStorage.setItem("historyFilters", JSON.stringify(filter));
 }
 
 
@@ -285,20 +221,24 @@ const createRoomsElement = () => {
 
     container.querySelector(".apply").addEventListener('click', () => {
         filterRoomContent(false)
+        viewFilter("rooms")
     });
     container.querySelector(".reset2").addEventListener("click", () => {
         resetContent("rooms");
     })
 }
 
-//temporary function
 //apply filter based on rooms
 const filterRoomContent = (isHistory) => {
     let baths;
     let beds;
     let container = document.querySelector(".cards-container");
     let cards = container.querySelectorAll(".card");
+    let filter = {};
 
+    if (localStorage.getItem("historyFilters") !== null) {
+        filter = JSON.parse(localStorage.getItem("historyFilters"));
+    }
 
     if (isHistory) {
         [beds, baths] = loadFilter("rooms");
@@ -314,9 +254,13 @@ const filterRoomContent = (isHistory) => {
                     if (type === ".bedrooms-number") {
                         beds = button.textContent[0];
                         beds = (beds === "A") ? "0" : beds;
+                        filter.beds_min = beds;
+                        filter.beds_max = beds;
                     } else {
                         baths = button.textContent[0];
                         baths = (baths === "A") ? "0" : baths;
+                        filter.baths_min = baths;
+                        filter.baths_max = baths;
                     }
                 }
             })
@@ -324,34 +268,25 @@ const filterRoomContent = (isHistory) => {
 
     }
 
-
-
-    // cards.forEach((card) => {
-    //     let bednum = card.querySelector(".small-info").textContent.split("|")[0].split(" ")[0];
-    //     let bathnum = card.querySelector(".small-info").textContent.split("|")[1].split(" ")[1];
-
-    //     if ((parseInt(beds) === 0 || parseInt(bednum) === parseInt(beds)) && (parseInt(baths) === 0 || parseInt(bathnum) === parseInt(baths))) {
-    //         card.classList.remove("rooms-filter-applied");
-    //     } else {
-    //         card.classList.add("rooms-filter-applied");
-    //     }
-    // })
-
-    const query = {
-        baths_min : baths,
-        baths_max : baths,
-        beds_min : beds,
-        beds_max: beds
+    if (beds === "0") {
+        delete filter.beds_min;
+        delete filter.beds_max;
     }
-    requestListings(query, "rooms", loadcontent);
+
+    if (baths === "0") {
+        delete filter.baths_min;
+        delete filter.baths_max;
+    }
+
+    removeCards();
+    requestListings(query, filter, loadcontent);
 
     saveFilter("rooms", beds, baths);
     if (beds !== "0" && baths !== "0") {
         document.querySelector(`.rooms-button`).classList.add("selected-filter");
     }
 
-    checkEmptyCardsContainer();
-
+    localStorage.setItem("historyFilters", JSON.stringify(filter));
 }
 
 //check if any other filter is open before opening a new filter
@@ -390,28 +325,40 @@ const goToSearchPage = (query = "") => {
     window.location.href = "search.html";
 }
 
-//temporary function
 //reset content after a filter reset
 const resetContent = (element) => {
+    let filter = {}
+    if (localStorage.getItem("historyFilters") !== null) {
+        filter = JSON.parse(localStorage.getItem("historyFilters"));
+    }
+
     const filters = ["price", "size", "rooms"];
     document.querySelector(".cards-container").innerHTML = "";
     if (element !== "rooms") {
         document.querySelector(`.min-${element}-input`).value = "";
         document.querySelector(`.max-${element}-input`).value = "";
     }
+
+    if (element === "price") {
+        delete filter.price_min;
+        delete filter.price_max;
+    } else if (element === "size") {
+        delete filter.size_min;
+        delete filter.size_max;
+    } else {
+        delete filter.baths_min;
+        delete filter.baths_max;
+        delete filter.beds_min;
+        delete filter.beds_max;
+    }
+
+    requestListings(query, filter, loadcontent);
     //reload content from start
-    loadcontent(query);
     saveFilter(element, null, null);
-    filters.forEach((filter) => {
-        //keep any other filters that are applied
-        if (filter !== "rooms") {
-            filterRangeContent(filter, true);
-        } else {
-            filterRoomContent(true);
-        }
-    });
     document.querySelector(`.${element}-button`).classList.remove("selected-filter");
     viewFilter(element);
+
+    localStorage.setItem("historyFilters", JSON.stringify(filter));
 }
 
 const showSavedInput = (element) => {
@@ -443,7 +390,7 @@ const showSavedButton = (type, button) => {
 const checkFavorites = () => {
     favorites.forEach((card) => {
         const element = document.querySelector(`.${card}`)
-        if(element){
+        if (element) {
             const icon = element.querySelector(".add-favorite i");
             icon.classList.add("fa-solid");
         }
@@ -474,4 +421,58 @@ const checkEmptyCardsContainer = () => {
     p.classList.add("empty");
     p.innerHTML = "No Matching Results Were Found";
     container.appendChild(p);
+}
+
+const removeCards = () => {
+    const cardsContainer = document.querySelector(".cards-container");
+    cardsContainer.innerHTML = "";
+}
+
+const searchWithHistory = (query = "") => {
+    let minPrice, maxPrice, minSize, MaxSize, beds, baths;
+    let filter = {};
+
+    if (localStorage.getItem("historyFilters") !== null) {
+        filter = JSON.parse(localStorage.getItem("historyFilters"));
+
+        if (filter.hasOwnProperty("price_min")) {
+            document.querySelector(`.price-button`).classList.add("selected-filter");
+        }
+
+        if (filter.hasOwnProperty("size_min")) {
+            document.querySelector(`.size-button`).classList.add("selected-filter");
+        }
+
+        if (filter.hasOwnProperty("baths_min") || filter.hasOwnProperty("beds_min")) {
+            document.querySelector(`.rooms-button`).classList.add("selected-filter");
+        }
+
+    } else {
+        [minPrice, maxPrice] = loadFilter("price");
+        [minSize, MaxSize] = loadFilter("size");
+        [beds, baths] = loadFilter("rooms");
+
+        if (minPrice !== "null" && maxPrice !== "null") {
+            filter.price_min = minPrice;
+            filter.price_max = maxPrice;
+            document.querySelector(`.price-button`).classList.add("selected-filter");
+        }
+
+        if (minSize !== "null" && MaxSize !== "null") {
+            filter.size_min = minSize;
+            filter.size_max = MaxSize;
+            document.querySelector(`.size-button`).classList.add("selected-filter");
+        }
+
+        if (beds !== "null" && baths !== "null") {
+            filter.beds_min = beds;
+            filter.beds_max = beds;
+            filter.baths_min = baths;
+            filter.baths_max = baths;
+            document.querySelector(`.rooms-button`).classList.add("selected-filter");
+        }
+    }
+
+    requestListings(query, filter, loadcontent);
+    localStorage.setItem("historyFilters", JSON.stringify(filter));
 }
