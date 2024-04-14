@@ -15,6 +15,16 @@ import { viewSearchHistory, addToSearchHistory, saveFilter, loadFilter, closeHis
 let query;
 let searchArr = [];
 let favorites = [];
+let filterParameter = {
+    price_min: 0,
+    price_max: 99999999,
+    size_min: 0,
+    size_max: 999999999,
+    beds_min: 0,
+    beds_max: 1000,
+    baths_min: 0,
+    baths_max: 1000,
+    };
 document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem("favorite") !== null) {
         favorites = JSON.parse(localStorage.getItem("favorite"));
@@ -142,10 +152,9 @@ const createPriceRangeElement = (element) => {
 const filterRangeContent = (type, isHistory) => {
     let min;
     let max;
-    let filter = {};
 
     if (localStorage.getItem("historyFilters") !== null) {
-        filter = JSON.parse(localStorage.getItem("historyFilters"));
+        filterParameter = JSON.parse(localStorage.getItem("historyFilters"));
     }
 
     if (isHistory) {
@@ -161,19 +170,19 @@ const filterRangeContent = (type, isHistory) => {
     if ((/^\d+$/.test(min) && /^\d+$/.test(max)) && (parseInt(min) < parseInt(max)) ) {
 
         if (type === "price") {
-            filter.price_min = min;
-            filter.price_max = max;
+            filterParameter.price_min = min;
+            filterParameter.price_max = max;
         } else {
-            filter.home_size_min = min;
-            filter.home_size_max = max;
+            filterParameter.home_size_min = min;
+            filterParameter.home_size_max = max;
         }
         saveFilter(type, min, max);
         document.querySelector(`.${type}-button`).classList.add("selected-filter");
     }
 
     removeCards();
-    requestListings(query, filter, loadcontent)
-    localStorage.setItem("historyFilters", JSON.stringify(filter));
+    requestListings(query, filterParameter, loadcontent)
+    localStorage.setItem("historyFilters", JSON.stringify(filterParameter));
 }
 
 
@@ -237,10 +246,9 @@ const filterRoomContent = (isHistory) => {
     let beds;
     let container = document.querySelector(".cards-container");
     let cards = container.querySelectorAll(".card");
-    let filter = {};
 
     if (localStorage.getItem("historyFilters") !== null) {
-        filter = JSON.parse(localStorage.getItem("historyFilters"));
+        filterParameter = JSON.parse(localStorage.getItem("historyFilters"));
     }
 
     if (isHistory) {
@@ -257,13 +265,13 @@ const filterRoomContent = (isHistory) => {
                     if (type === ".bedrooms-number") {
                         beds = button.textContent[0];
                         beds = (beds === "A") ? "0" : beds;
-                        filter.beds_min = parseInt(beds);
-                        filter.beds_max = parseInt(beds);
+                        filterParameter.beds_min = parseInt(beds);
+                        filterParameter.beds_max = parseInt(beds);
                     } else {
                         baths = button.textContent[0];
                         baths = (baths === "A") ? "0" : baths;
-                        filter.baths_min = parseInt(baths);
-                        filter.baths_max = parseInt(baths);
+                        filterParameter.baths_min = parseInt(baths);
+                        filterParameter.baths_max = parseInt(baths);
                     }
                 }
             })
@@ -272,24 +280,24 @@ const filterRoomContent = (isHistory) => {
     }
 
     if (beds === "0") {
-        delete filter.beds_min;
-        delete filter.beds_max;
+        filterParameter.beds_min = 0;
+        filterParameter.beds_max = 99999999;
     }
 
     if (baths === "0") {
-        delete filter.baths_min;
-        delete filter.baths_max;
+        filterParameter.baths_min = 0;
+        filterParameter.baths_max = 9999999;
     }
 
     removeCards();
-    requestListings(query, filter, loadcontent);
+    requestListings(query, filterParameter, loadcontent);
 
     saveFilter("rooms", beds, baths);
     if (beds !== "0" && baths !== "0") {
         document.querySelector(`.rooms-button`).classList.add("selected-filter");
     }
 
-    localStorage.setItem("historyFilters", JSON.stringify(filter));
+    localStorage.setItem("historyFilters", JSON.stringify(filterParameter));
 }
 
 //check if any other filter is open before opening a new filter
@@ -330,9 +338,8 @@ const goToSearchPage = (query = "") => {
 
 //reset content after a filter reset
 const resetContent = (element) => {
-    let filter = {}
     if (localStorage.getItem("historyFilters") !== null) {
-        filter = JSON.parse(localStorage.getItem("historyFilters"));
+        filterParameter = JSON.parse(localStorage.getItem("historyFilters"));
     }
 
     const filters = ["price", "size", "rooms"];
@@ -343,25 +350,25 @@ const resetContent = (element) => {
     }
 
     if (element === "price") {
-        delete filter.price_min;
-        delete filter.price_max;
+        filterParameter.price_min = 0;
+        filterParameter.price_max = 99999999;
     } else if (element === "size") {
-        delete filter.home_size_min;
-        delete filter.home_size_max;
+        filterParameter.home_size_min = 0;
+        filterParameter.home_size_max = 99999999;
     } else {
-        delete filter.baths_min;
-        delete filter.baths_max;
-        delete filter.beds_min;
-        delete filter.beds_max;
+        filterParameter.baths_min = 0;
+        filterParameter.baths_max = 99999999;
+        filterParameter.beds_min = 0;
+        filterParameter.beds_max = 999999999;
     }
 
-    requestListings(query, filter, loadcontent);
+    requestListings(query, filterParameter, loadcontent);
     //reload content from start
     saveFilter(element, null, null);
     document.querySelector(`.${element}-button`).classList.remove("selected-filter");
     viewFilter(element);
 
-    localStorage.setItem("historyFilters", JSON.stringify(filter));
+    localStorage.setItem("historyFilters", JSON.stringify(filterParameter));
 }
 
 const showSavedInput = (element) => {
@@ -433,49 +440,24 @@ const removeCards = () => {
 
 const searchWithHistory = (query = "") => {
     let minPrice, maxPrice, minSize, MaxSize, beds, baths;
-    let filter = {};
 
     if (localStorage.getItem("historyFilters") !== null) {
-        filter = JSON.parse(localStorage.getItem("historyFilters"));
+        filterParameter = JSON.parse(localStorage.getItem("historyFilters"));
 
-        if (filter.hasOwnProperty("price_min")) {
+        if (filterParameter.hasOwnProperty("price_min")) {
             document.querySelector(`.price-button`).classList.add("selected-filter");
         }
 
-        if (filter.hasOwnProperty("size_min")) {
+        if (filterParameter.hasOwnProperty("size_min")) {
             document.querySelector(`.size-button`).classList.add("selected-filter");
         }
 
-        if (filter.hasOwnProperty("baths_min") || filter.hasOwnProperty("beds_min")) {
+        if (filterParameter.hasOwnProperty("baths_min") || filter.hasOwnProperty("beds_min")) {
             document.querySelector(`.rooms-button`).classList.add("selected-filter");
         }
 
-    } else {
-        [minPrice, maxPrice] = loadFilter("price");
-        [minSize, MaxSize] = loadFilter("size");
-        [beds, baths] = loadFilter("rooms");
-
-        if (minPrice !== "null" && maxPrice !== "null") {
-            filter.price_min = minPrice;
-            filter.price_max = maxPrice;
-            document.querySelector(`.price-button`).classList.add("selected-filter");
-        }
-
-        if (minSize !== "null" && MaxSize !== "null") {
-            filter.size_min = minSize;
-            filter.size_max = MaxSize;
-            document.querySelector(`.size-button`).classList.add("selected-filter");
-        }
-
-        if (beds !== "null" && baths !== "null") {
-            filter.beds_min = beds;
-            filter.beds_max = beds;
-            filter.baths_min = baths;
-            filter.baths_max = baths;
-            document.querySelector(`.rooms-button`).classList.add("selected-filter");
-        }
-    }
-
-    requestListings(query, filter, loadcontent);
-    localStorage.setItem("historyFilters", JSON.stringify(filter));
+    } 
+    
+    requestListings(query, filterParameter, loadcontent);
+    localStorage.setItem("historyFilters", JSON.stringify(filterParameter));
 }
