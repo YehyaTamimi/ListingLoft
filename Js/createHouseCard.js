@@ -24,7 +24,7 @@ export const createCard = (house) => {
     }
 
     const image = photos && photos[0]?.href;
-    if (!photos || !image || !property_id) {
+    if (!photos || !image || !property_id || !description) {
         return;
     }
 
