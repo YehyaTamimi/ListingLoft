@@ -204,10 +204,10 @@ header button:hover {
 }
 
 .swiper {
-    width: 90vw;
-    height: 45vh;
+    width: 90%;
+    height: 100%;
     position: relative;
-
+    flex-shrink: 0;
 }
 
 /* .swiper-wrapper {
@@ -252,16 +252,24 @@ header button:hover {
     scale: 1.05;
 }
 
-@media screen and (max-width:  680px) {
+
+@media screen and (max-width:  900px)  {
 
     header{
-        padding: 0 1%;
+        padding: 2% 1%;
         justify-content: space-between;
+        position: relative;
+    }
+
+    .hero{
+        margin-top: 0;
     }
 
     .hero p {
         font-size: 1.5rem;
     }
+}
+@media screen and (max-width:  680px) {
 
     .search-container input{
         width: 70vw;
