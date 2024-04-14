@@ -1,5 +1,4 @@
 //import hardcoded data from json file
-import json from "./newListings.js";
 import { createCard } from "./createHouseCard.js";
 import { requestListings } from "./requestAPI.js";
 import { viewSearchHistory, addToSearchHistory, closeHistory } from "./history.js";
@@ -11,9 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     favorites = JSON.parse(localStorage.getItem("favorite"));
   }
 
-  startswiper();
-  loadcontent();
-
+  requestListings("", {}, loadcontent);
   if (localStorage.getItem('history') !== null) {
     searchArr = JSON.parse(localStorage.getItem('history'));
 }
@@ -41,7 +38,7 @@ document.querySelector(".favorites").addEventListener("click", goToFavorites);
 
 
 //load content from json file
-const loadcontent = () => {
+const loadcontent = (json) => {
   let houses = json["listings"];
   let container = document.querySelector(".cards-container");
   let count = 10;
@@ -52,6 +49,7 @@ const loadcontent = () => {
     count--;
   });
   checkFavorites();
+  startswiper();
 }
 
 const goToFavorites = () => {
@@ -76,9 +74,7 @@ const checkFavorites = ()=>{
   favorites.forEach((card) => {
     try{
       const element = document.querySelector(`.${card}`)
-      console.log(element)
       const icon = element.querySelector(".add-favorite i");
-      console.log(icon)
       icon.classList.add("fa-solid");
     }catch{
       return;
