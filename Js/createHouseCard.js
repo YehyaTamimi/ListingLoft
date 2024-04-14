@@ -22,7 +22,7 @@ export const createCard = (house) => {
         state1 = state;
     }
 
-    const price = list_price.toLocaleString();
+    const price = list_price?.toLocaleString();
     
     const image = photos && photos[0]?.href ; 
     if (!photos || !image) {
