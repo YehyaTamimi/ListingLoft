@@ -4,7 +4,25 @@ export const createCard = (house) => {
     const { baths_full: baths, beds, sqft: size } = description;
     const { address: { city, state, street_name: street } } = location;
     const price = list_price.toLocaleString();
-    const image = primary_photo["href"];
+
+ if (!primary_photo || !primary_photo.href) {
+    console.log("No image available for this property.");
+    return; 
+}
+
+const image = primary_photo["href"];
+
+if (!description || !location || !list_price || !property_id) {
+    console.log("One or more required properties are missing from the JSON data.");
+    return; 
+}
+
+if (!baths || !beds || !size || !city || !state || !street || !price) {
+    console.log("One or more extracted values are empty.");
+    return; 
+}
+
+
 
     const container = document.querySelector(".cards-container");
   
