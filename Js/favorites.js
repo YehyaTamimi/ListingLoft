@@ -1,6 +1,7 @@
-import json from "./proporties.js";
+
 import { createCard } from "./createHouseCard.js";
 import { viewSearchHistory, addToSearchHistory, closeHistory } from "./history.js";
+import { requestListings } from "./requestAPI.js";
 
 let searchArr = [];
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,39 +10,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem("favorite") !== null) {
         favorites = JSON.parse(localStorage.getItem("favorite"));
     }
-    loadFavorites(favorites);
 
+    let counter =0;
+    favorites.forEach((favorite)=>{
+        let id = favorite.split("h")[1];
+        requestListings(id, {}, loadFavorites, true, counter);
+        counter++;
+    })
 
     document.querySelector(".home").addEventListener("click", gotoHomePage);
-
-    const favorite = document.querySelectorAll(".add-favorite");
-    if (favorite.length !== 0) {
-        favorite.forEach((favorite) => {
-            favorite.addEventListener("click", removeFavorite)
-            const icon = favorite.querySelector("i");
-            icon.classList.add("fa-solid");
-        })
-    } else {
-        enableSearch();
-    }
 })
 
 
 //load content from json file
-const loadFavorites = (favorites) => {
-    let houses = json["listings"];
-    const container = document.querySelector(".cards-container");
-
-    houses.forEach((house) => {
-        const { description, location, list_price, property_id } = house;
-        const { address: { city, state, street_name } } = location;
-        const size = description["sqft"];
-        const price = list_price;
-        if (favorites.includes(`h${property_id}`)) {
-            createCard(house);
-        }
-    });
-
+const loadFavorites = (json) => {
+    let house = json["data"];
+    createCard(house);
     checkEmpty();
 }
 
@@ -77,6 +61,13 @@ const checkEmpty = () => {
     const container = document.querySelector(".cards-container");
     if (container.childNodes.length === 0) {
         createSearch(container);
+    }else{
+        const favorite = document.querySelectorAll(".add-favorite");
+        favorite.forEach((favorite) => {
+            favorite.addEventListener("click", removeFavorite)
+            const icon = favorite.querySelector("i");
+            icon.classList.add("fa-solid");
+        });
     }
 }
 
