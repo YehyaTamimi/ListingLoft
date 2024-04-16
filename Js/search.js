@@ -323,7 +323,7 @@ const handleKeyPress = (e) => {
 }
 
 const gotoHomePage = () => {
-    window.location.href = "/html/index.html";
+    window.location.href = "../index.html";
 }
 
 const goToSearchPage = (query = "") => {
