@@ -48,7 +48,7 @@ const addLoading = () => {
   const body = document.querySelector("body");
   body.classList.add("grayout");
   const contain = document.createElement("div");
-  contain.innerHTML = '<img src="/ListingLoft/images/Eclipse@2x-1.0s-200px-200px.gif"/>'
+  contain.innerHTML = '<img src="/images/Eclipse@2x-1.0s-200px-200px.gif"/>'
   contain.classList.add("loading");
 
   body.appendChild(contain);

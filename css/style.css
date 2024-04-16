@@ -52,7 +52,7 @@ header button:hover {
 
 .hero{
     position: relative;
-    background-image: url("/ListingLoft/images/img1.jpg");
+    background-image: url("/images/img1.jpg");
     background-size: cover;
     background-position: center;
     height: 65vh;
