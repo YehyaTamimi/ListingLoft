@@ -16,7 +16,7 @@ Listing Loft is a simple yet powerful Ecommerce House Listings platform built us
 9. Contact Seller/Agent: As a user, I want to contact the seller or agent for more information about a house.
 
 # Live Demo 
-a live version of this website can be accessed (here)[https://yehyatamimi.github.io/ListingLoft/]
+a live version of this website can be accessed [here](https://yehyatamimi.github.io/ListingLoft/)
 
 # Instructions to Run the Project Locally
 
