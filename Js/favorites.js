@@ -30,7 +30,7 @@ const loadFavorites = (json) => {
 }
 
 const gotoHomePage = () => {
-    window.location.href = "index.html";
+    window.location.href = "../index.html";
 }
 
 const removeFavorite = (e) => {
