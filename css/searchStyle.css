@@ -26,7 +26,6 @@ header {
     background-color: white;
     gap: 10px;
     z-index: 1;
-    /* flex-direction: column; */
 }
 
 header .whole-container {
@@ -383,7 +382,6 @@ main {
     border: 1px solid black;
     width: 80vw;
     height: 1000px;
-    /* max-height: 100vh; */
     display: flex;
     flex-direction: column;
     padding: 20px; 

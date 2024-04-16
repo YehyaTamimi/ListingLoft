@@ -55,7 +55,7 @@ const loadcontent = (json) => {
 }
 
 const goToFavorites = () => {
-  window.location.href = "/html/favorites.html";
+  window.location.href = "/ListingLoft/html/favorites.html";
 }
 
 // handle Enter key press for search
@@ -69,7 +69,7 @@ const handleKeyPress = (e) => {
 const goToSearchPage = (query="") => {
   sessionStorage.setItem("query", query);
   addToSearchHistory(query, searchArr);
-  window.location.href = "/html/search.html";
+  window.location.href = "/ListingLoft/html/search.html";
 }
 
 const checkFavorites = ()=>{
