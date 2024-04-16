@@ -30,7 +30,7 @@ const loadFavorites = (json) => {
 }
 
 const gotoHomePage = () => {
-    window.location.href = "../index.html";
+    window.location.href = "/ListingLoft/index.html";
 }
 
 const removeFavorite = (e) => {
