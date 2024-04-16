@@ -1,4 +1,4 @@
-# ListingLoft
+# ListingLoft :house_with_garden:
 
 # Description 
 Listing Loft is a simple yet powerful Ecommerce House Listings platform built using Vanilla JavaScript alongside API integration. With Listing Loft, users can easily browse through a collection of houses, search for houses by various criteria, filter results, view detailed information about each house, and much more.
