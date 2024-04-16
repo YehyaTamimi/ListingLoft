@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     favorites = JSON.parse(localStorage.getItem("favorite"));
   }
 
-  requestListings("", {}, loadcontent);
+  requestListings("", {}, loadcontent, false, 1);
 
   if (localStorage.getItem('history') !== null) {
     searchArr = JSON.parse(localStorage.getItem('history'));
