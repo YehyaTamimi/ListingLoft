@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     favorites = JSON.parse(localStorage.getItem("favorite"));
   }
 
-  requestListings("", {}, loadcontent);
+  requestListings("", {}, loadcontent, false, 1);
+
   if (localStorage.getItem('history') !== null) {
     searchArr = JSON.parse(localStorage.getItem('history'));
 }
@@ -33,6 +34,7 @@ document.querySelector(".favorites").addEventListener("click", goToFavorites);
             closeHistory();
         }
     });
+  document.addEventListener("resize", startswiper);
 
 })
 
@@ -83,10 +85,21 @@ const checkFavorites = ()=>{
 }
 
 const startswiper = () => {
+  let slidesPerView;
+  const width = window.innerWidth;
+
+  if (width < 700) {
+    slidesPerView = 'auto'; 
+  } else if (width < 1000) {
+    slidesPerView = 2;
+  } else {
+    slidesPerView = 3; 
+  }
+
   const swiper = new Swiper('.swiper', {
-    slidesPerView: 3,
+    slidesPerView: slidesPerView,
     spaceBetween: 30,
-    freeMode: true,
+    freeMode: slidesPerView === 'auto',
     pagination: {
       el: '.swiper-pagination',
       clickable: true,
@@ -96,5 +109,4 @@ const startswiper = () => {
       prevEl: '.swiper-button-prev',
     },
   });
-}
-
+};

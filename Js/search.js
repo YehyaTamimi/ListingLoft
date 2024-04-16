@@ -11,19 +11,20 @@ import { requestListings } from "./requestAPI.js";
 import { viewSearchHistory, addToSearchHistory, saveFilter, loadFilter, closeHistory } from "./history.js";
 
 
-
+let counter =0;
+let defaultMax = 999999999
 let query;
 let searchArr = [];
 let favorites = [];
 let filterParameter = {
     price_min: 0,
-    price_max: 99999999,
-    size_min: 0,
-    size_max: 999999999,
+    price_max: defaultMax,
+    home_size_min: 0,
+    home_size_max: defaultMax,
     beds_min: 0,
-    beds_max: 1000,
+    beds_max: defaultMax,
     baths_min: 0,
-    baths_max: 1000,
+    baths_max: defaultMax,
     };
 document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem("favorite") !== null) {
@@ -59,6 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
             closeHistory();
         }
     });
+
+    changeFilter();
+    window.addEventListener("resize", changeFilter);
+
     const filters = ["price", "size", "rooms"];
     filters.forEach((filter) => {
         document.querySelector(`.${filter}-button`).addEventListener("click", () => {
@@ -165,6 +170,10 @@ const filterRangeContent = (type, isHistory) => {
     } else {
         min = document.querySelector(`.min-${type}-input`).value.trim();
         max = document.querySelector(`.max-${type}-input`).value.trim();
+
+        if (min === "" && max === "") {
+            return;
+        }
     }
 
     if ((/^\d+$/.test(min) && /^\d+$/.test(max)) && (parseInt(min) < parseInt(max)) ) {
@@ -178,6 +187,10 @@ const filterRangeContent = (type, isHistory) => {
         }
         saveFilter(type, min, max);
         document.querySelector(`.${type}-button`).classList.add("selected-filter");
+        const oneFilter = document.querySelector(`.filter-button`);
+        if (oneFilter) {
+            oneFilter.classList.add("selected-filter");
+        }
     }
 
     removeCards();
@@ -212,24 +225,7 @@ const createRoomsElement = () => {
 
     container.appendChild(type);
 
-    const roomTypes = [".bedrooms-number", ".bathrooms-number"];
-
-    //small scale callback-hell ;)
-    roomTypes.forEach((type) => {
-        let rooms = document.querySelector(type);
-        let roombuttons = rooms.querySelectorAll("button");
-        roombuttons.forEach((button) => {
-            button.addEventListener('click', () => {
-
-                roombuttons.forEach((btn) => {
-                    btn.classList.remove('active');
-                });
-                button.classList.add('active');
-            });
-
-            showSavedButton(type, button);
-        });
-    })
+    changeRoomButtonColor();
 
     container.querySelector(".apply").addEventListener('click', () => {
         filterRoomContent(false)
@@ -244,8 +240,6 @@ const createRoomsElement = () => {
 const filterRoomContent = (isHistory) => {
     let baths;
     let beds;
-    let container = document.querySelector(".cards-container");
-    let cards = container.querySelectorAll(".card");
 
     if (localStorage.getItem("historyFilters") !== null) {
         filterParameter = JSON.parse(localStorage.getItem("historyFilters"));
@@ -281,20 +275,24 @@ const filterRoomContent = (isHistory) => {
 
     if (beds === "0") {
         filterParameter.beds_min = 0;
-        filterParameter.beds_max = 99999999;
+        filterParameter.beds_max = defaultMax;
     }
 
     if (baths === "0") {
         filterParameter.baths_min = 0;
-        filterParameter.baths_max = 9999999;
+        filterParameter.baths_max = defaultMax;
     }
 
     removeCards();
-    requestListings(query, filterParameter, loadcontent);
+    requestListings(query, filterParameter, loadcontent, false, counter);
 
     saveFilter("rooms", beds, baths);
     if (beds !== "0" && baths !== "0") {
         document.querySelector(`.rooms-button`).classList.add("selected-filter");
+        const oneFilter = document.querySelector(`.filter-button`);
+        if (oneFilter) {
+            oneFilter.classList.add("selected-filter");
+        }
     }
 
     localStorage.setItem("historyFilters", JSON.stringify(filterParameter));
@@ -336,7 +334,7 @@ const goToSearchPage = (query = "") => {
     window.location.href = "search.html";
 }
 
-//reset content after a filter reset
+//reset content based on filter type reset
 const resetContent = (element) => {
     if (localStorage.getItem("historyFilters") !== null) {
         filterParameter = JSON.parse(localStorage.getItem("historyFilters"));
@@ -344,32 +342,46 @@ const resetContent = (element) => {
 
     const filters = ["price", "size", "rooms"];
     document.querySelector(".cards-container").innerHTML = "";
-    if (element !== "rooms") {
-        document.querySelector(`.min-${element}-input`).value = "";
-        document.querySelector(`.max-${element}-input`).value = "";
-    }
 
-    if (element === "price") {
-        filterParameter.price_min = 0;
-        filterParameter.price_max = 99999999;
-    } else if (element === "size") {
-        filterParameter.home_size_min = 0;
-        filterParameter.home_size_max = 99999999;
+    if (element === "all") {
+        filters.forEach((filter) => {
+            resetFilter(filter);
+            document.querySelector(`.${element}-button`).classList.remove("selected-filter");
+        });
+        document.querySelector(".filter-button").classList.remove("selected-filter");
     } else {
-        filterParameter.baths_min = 0;
-        filterParameter.baths_max = 99999999;
-        filterParameter.beds_min = 0;
-        filterParameter.beds_max = 999999999;
+        resetFilter(element);
+        document.querySelector(`.${element}-button`).classList.remove("selected-filter");
+        viewFilter(element);
     }
 
     requestListings(query, filterParameter, loadcontent);
-    //reload content from start
-    saveFilter(element, null, null);
-    document.querySelector(`.${element}-button`).classList.remove("selected-filter");
-    viewFilter(element);
-
     localStorage.setItem("historyFilters", JSON.stringify(filterParameter));
 }
+
+//reset a specific filter
+const resetFilter = (filter) => {
+    console.log(filter);
+    if (filter !== "rooms") {
+        document.querySelector(`.min-${filter}-input`).value = "";
+        document.querySelector(`.max-${filter}-input`).value = "";
+    }
+
+    if (filter === "price") {
+        filterParameter.price_min = 0;
+        filterParameter.price_max = defaultMax;
+    } else if (filter === "size") {
+        filterParameter.home_size_min = 0;
+        filterParameter.home_size_max = defaultMax;
+    } else {
+        filterParameter.baths_min = 0;
+        filterParameter.baths_max = defaultMax;
+        filterParameter.beds_min = 0;
+        filterParameter.beds_max = defaultMax;
+    }
+
+    saveFilter(filter, null, null);
+};
 
 const showSavedInput = (element) => {
     let min, max;
@@ -433,31 +445,275 @@ const checkEmptyCardsContainer = () => {
     container.appendChild(p);
 }
 
+
+const changeFilter = () => {
+    const width = window.innerWidth;
+    const filters = ["price", "size", "rooms"];
+    const header = document.querySelector(".whole-container");
+    const filter = document.querySelector(".filter-container")
+
+    if (width < 620) {
+        filters.forEach((filter) => {
+            const button = document.querySelector(`.${filter}-container`)
+            button.style.display = "none";
+        });
+        createOneFilterButton();
+    } else {
+        counter = 0;
+        const oneFilter = document.querySelector(".filter-range");
+        hideFilter(oneFilter);
+        filters.forEach((filter) => {
+            const button = document.querySelector(`.${filter}-container`)
+            button.style.display = "block";
+        });
+        if (filter) {
+            header.removeChild(filter);
+        }
+    }
+}
+
+const createOneFilterButton = () => {
+    if (!document.querySelector(".filter-container")) {
+        const container = document.querySelector(".whole-container");
+        const body = document.querySelector("body");
+        const filter = document.createElement("div");
+        filter.classList.add("filter-container");
+        const button = document.createElement("button");
+        button.textContent = "Filter";
+        button.classList.add("filter-button")
+        filter.appendChild(button);
+        container.appendChild(filter);
+        button.addEventListener("click", () => { createFilterBody(body) })
+    }
+}
+
+const createFilterBody = (body) => {
+    const range = document.createElement("div");
+    range.classList.add("filter-range");
+    range.innerHTML = `
+    <div class="close"><button class="closeButton"><i class="fa-solid fa-x"></i></button></div>
+    <div>Price</div>
+    <div class="test">
+        <div class="min-price">
+            <input type="text" placeholder="Min" class=min-price-input>
+            <p>$</p>
+        </div>
+        <div class="dash">-</div>
+        <div class="max-price">
+            <input type="text" placeholder="Max" class=max-price-input>
+            <p>$</p>
+        </div>
+    </div>
+    <div>Bedrooms</div>
+        <div class="bedrooms-number">
+            <button>Any</button>
+            <button>1+</button>
+            <button>2+</button>
+            <button>3+</button>
+            <button>4+</button>
+        </div>
+        <div>Bathrooms</div>
+        <div class="bathrooms-number">
+            <button>Any</button>
+            <button>1+</button>
+            <button>2+</button>
+            <button>3+</button>
+            <button>4+</button>
+        </div>
+        <div>Size</div>
+        <div class="test">
+        <div class="min-size">
+            <input type="text" placeholder="Min" class=min-size-input>
+            <p>M</p>
+        </div>
+        <div class="dash">-</div>
+        <div class="max-size">
+            <input type="text" placeholder="Max" class=max-size-input>
+            <p>M</p>
+        </div>
+    </div>
+    <p class=reset2> Reset Changes </p>
+        <button class="apply">Apply</button>
+    `
+    range.querySelector(".closeButton").addEventListener("click", () => {
+        hideFilter(range);
+    })
+
+    showFilter(range);
+    changeRoomButtonColor();
+    showSavedInput("price");
+    showSavedInput("size");
+
+    range.querySelector(".apply").addEventListener("click", () => {
+        filterContent(range);
+    })
+
+    range.querySelector(".reset2").addEventListener("click", () => {
+        resetAll(range);
+    })
+
+}
+
+
+const filterContent = (filter) => {
+    const filterTypes = ["rooms", "price", "size"];
+    let beds = "0";
+    let baths = "0";
+
+    if (localStorage.getItem("historyFilters") !== null) {
+        filterParameter = JSON.parse(localStorage.getItem("historyFilters"));
+    }
+
+    filterTypes.forEach((type) => {
+        let min, max;
+
+            if (type === "rooms") {
+                const roomTypes = [".bedrooms-number", ".bathrooms-number"];
+
+                roomTypes.forEach((roomType) => {
+                    let typeButtons = document.querySelectorAll(`${roomType} button`);
+                    typeButtons.forEach((button) => {
+                        if (button.classList.contains('active')) {
+                            if (roomType === ".bedrooms-number") {
+                                beds = button.textContent[0];
+                                beds = (beds === "A") ? "0" : beds;
+                                filterParameter.beds_min = parseInt(beds);
+                                filterParameter.beds_max = parseInt(beds);
+                            } else {
+                                baths = button.textContent[0];
+                                baths = (baths === "A") ? "0" : baths;
+                                filterParameter.baths_min = parseInt(baths);
+                                filterParameter.baths_max = parseInt(baths);
+                            }
+                        }
+                    });
+                });
+            } else {
+                min = document.querySelector(`.min-${type}-input`).value.trim();
+                max = document.querySelector(`.max-${type}-input`).value.trim();
+
+                if ((min === "" && max === "") || (!(/^\d+$/.test(min)) || !(/^\d+$/.test(max)) || parseInt(min) >= parseInt(max))) {
+                    return;
+                } else {
+                    if (type === "price") {
+                        filterParameter.price_min = min;
+                        filterParameter.price_max = max;
+                    } else {
+                        filterParameter.home_size_min = min;
+                        filterParameter.home_size_max = max;
+                    }
+                }
+            }
+        
+
+        if (type === "rooms") {
+            if (beds === "0") {
+                filterParameter.beds_min = 0;
+                filterParameter.beds_max = 99999999;
+            }
+
+            if (baths === "0") {
+                filterParameter.baths_min = 0;
+                filterParameter.baths_max = 9999999;
+            }
+
+            saveFilter(type, beds, baths);
+
+            if (beds !== "0" || baths !== "0") {
+                document.querySelector(`.rooms-button`).classList.add("selected-filter");
+            }
+        } else {
+            saveFilter(type, min, max);
+            document.querySelector(`.${type}-button`).classList.add("selected-filter");
+        }
+        const oneFilter = document.querySelector(`.filter-button`);
+            if (oneFilter) {
+                oneFilter.classList.add("selected-filter");
+            }
+    });
+
+    removeCards();
+    requestListings(query, filterParameter, loadcontent, false, counter);
+    localStorage.setItem("historyFilters", JSON.stringify(filterParameter));
+    hideFilter(filter)
+}
+
+
+const changeRoomButtonColor = () => {
+    const roomTypes = [".bedrooms-number", ".bathrooms-number"];
+
+    //small scale callback-hell ;)
+    roomTypes.forEach((type) => {
+        let rooms = document.querySelector(type);
+        let roombuttons = rooms.querySelectorAll("button");
+        roombuttons.forEach((button) => {
+            button.addEventListener('click', () => {
+
+                roombuttons.forEach((btn) => {
+                    btn.classList.remove('active');
+                });
+                button.classList.add('active');
+            });
+
+            showSavedButton(type, button);
+        });
+    })
+}
+
+const resetAll = (filter) => {
+    resetContent("all");
+    document.querySelector(`.filter-container`).classList.remove("selected-filter");
+    hideFilter(filter);
+}
+
+const showFilter = (filter) => {
+    const body = document.querySelector("body")
+    body.appendChild(filter);
+    body.classList.add("disabled");
+}
+
+const hideFilter = (filter) => {
+    const body = document.querySelector("body")
+    if (filter) {
+        body.removeChild(filter);
+        body.classList.remove("disabled");
+    }
+}
+
 const removeCards = () => {
     const cardsContainer = document.querySelector(".cards-container");
     cardsContainer.innerHTML = "";
 }
 
 const searchWithHistory = (query = "") => {
-    let minPrice, maxPrice, minSize, MaxSize, beds, baths;
+    const oneFilter = document.querySelector(`.filter-button`);
 
     if (localStorage.getItem("historyFilters") !== null) {
         filterParameter = JSON.parse(localStorage.getItem("historyFilters"));
 
-        if (filterParameter.hasOwnProperty("price_min")) {
+        if (filterParameter.hasOwnProperty("price_min") && filterParameter.price_max !== defaultMax) {
             document.querySelector(`.price-button`).classList.add("selected-filter");
+            if (oneFilter) {
+                oneFilter.classList.add("selected-filter");
+            }
         }
 
-        if (filterParameter.hasOwnProperty("size_min")) {
+        if (filterParameter.hasOwnProperty("home_size_min") && filterParameter.home_size_max !== defaultMax) {
             document.querySelector(`.size-button`).classList.add("selected-filter");
+            if (oneFilter) {
+                oneFilter.classList.add("selected-filter");
+            }
         }
 
-        if (filterParameter.hasOwnProperty("baths_min") || filter.hasOwnProperty("beds_min")) {
+        if ((filterParameter.hasOwnProperty("baths_min") || filter.hasOwnProperty("beds_min")) && (filterParameter.beds_max !== defaultMax || filterParameter.baths_max !== defaultMax )) {
             document.querySelector(`.rooms-button`).classList.add("selected-filter");
+            if (oneFilter) {
+                oneFilter.classList.add("selected-filter");
+            }
         }
 
     } 
     
     requestListings(query, filterParameter, loadcontent);
-    localStorage.setItem("historyFilters", JSON.stringify(filterParameter));
+
 }
