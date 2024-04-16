@@ -5,7 +5,7 @@ export const requestListings = (query, filter, callback, favorite = false, count
     addLoading();
   }
 
-  let apiKey = "9847882244mshb65e18fa82f6934p1ce351jsna26cf43b0da3";
+  let apiKey = "f1b4ea8720mshd5da3624d5deaf5p1d48bfjsn5c5167d9b4aa";
   const options = {
     method: 'GET',
     headers: {
